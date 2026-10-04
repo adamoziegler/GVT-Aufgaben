@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GVT Aufgabe 2 - 2D Geometrie aus Linien (Seestern)</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 { font-size: 1.5rem; margin-top: 0; color: #e2e8f0; }
+        p { color: #94a3b8; font-size: 0.9rem; }
+        canvas {
+            width: 400px;
+            height: 400px;
+            background-color: #020617;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            margin: 1rem 0;
+        }
+        .info-box {
+            font-size: 0.85rem;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>WebGL 2D-Geometrie: Geometrischer Seestern</h1>
+        <p>Erstellt mit reiner WebGL-API (Vertices > 30, Modus: <code>gl.LINE_STRIP</code>)</p>
+        
+        <!-- WebGL Canvas -->
+        <canvas id="glcanvas" width="400" height="400"></canvas>
+
+        <div class="info-box">
+            Anzahl gerenderter Vertices: <span id="vertex-count">0</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('glcanvas');
+            const gl = canvas.getContext('webgl');
+
+            if (!gl) {
+                alert('WebGL wird von deinem Browser nicht unterstützt!');
+                return;
+            }
+
+            // --- 1. GEOMETRIE GENERIEREN (Prozeduraler Seestern mit > 30 Vertices) ---
+            const vertices = [];
+            
+            // Wir erzeugen einen 5-zackigen Seestern mit Innen- und Außenpunkten 
+            // plus ein inneres ornamentales Netz, um weit über 30 Vertices zu kommen.
+            const outerRadius = 0.7;
+            const innerRadius = 0.3, coreRadius = 0.15;
+            const numPoints = 5;
+
+            // Hauptstern-Umriss (äußere und innere Zacken abwechselnd)
+            const mainStarPoints = [];
+            for (let i = 0; i < numPoints * 2; i++) {
+                const angle = (i * Math.PI) / numPoints;
+                const r = (i % 2 === 0) ? outerRadius : innerRadius;
+                mainStarPoints.push({
+                    x: Math.cos(angle - Math.PI / 2) * r,
+                    y: Math.sin(angle - Math.PI / 2) * r
+                });
+            }
+
+            // Aufbau eines zusammenhängenden Pfades via LINE_STRIP
+            // 1. Äußerer Umriss des Seesterns
+            for (let i = 0; i < mainStarPoints.length; i++) {
+                vertices.push(mainStarPoints[i].x, mainStarPoints[i].y);
+            }
+            // Schließen des Hauptsterns
+            vertices.push(mainStarPoints[0].x, mainStarPoints[0].y);
+
+            // 2. Inneres Verbindungsnetz (Strahlen vom Zentrum zu den Ecken und Querlinien)
+            for (let i = 0; i < mainStarPoints.length; i += 2) {
+                // Verbindung von Außen-Spitze zum Zentrum
+                vertices.push(0.0, 0.0);
+                vertices.push(mainStarPoints[i].x, mainStarPoints[i].y);
+                
+                // Verbindung zur nächsten inneren Einbuchtung für ein geometrisches Netzmuster
+                const nextIdx = (i + 2) % mainStarPoints.length;
+                vertices.push(mainStarPoints[nextIdx].x, mainStarPoints[nextIdx].y);
+            }
+
+            // 3. Inneres Hexagon/Pentagon im Kern für zusätzliche Strukturlinien
+            for (let i = 0; i <= numPoints; i++) {
+                const angle = (i * 2 * Math.PI) / numPoints;
+                vertices.push(Math.cos(angle) * coreRadius, Math.sin(angle) * coreRadius);
+            }
+
+            // UI-Ausgabe der Vertex-Anzahl (2 Koordinaten pro Vertex)
+            const totalVerticesCount = vertices.length / 2;
+            document.getElementById('vertex-count').textContent = totalVerticesCount;
+            console.log(`Generierte Vertices: ${totalVerticesCount}`);
+
+            // --- 2. SHADER ERSTELLEN ---
+            // Vertex Shader
+            const vsSource = `
+                attribute vec2 aPosition;
+                void main() {
+                    gl_Position = vec4(aPosition, 0.0, 1.0);
+                }
+            `;
+
+            // Fragment Shader (Cyan/Blau-Farbton passend zum Thema See)
+            const fsSource = `
+                precision mediump float;
+                void main() {
+                    gl_FragColor = vec4(0.22, 0.74, 0.96, 1.0); 
+                }
+            `;
+
+            function createShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error('Shader-Fehler:', gl.getShaderInfoLog(shader));
+                    gl.deleteShader(shader);
+                    return null;
+                }
+                return shader;
+            }
+
+            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+            const shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                console.error('Programmier-Fehler:', gl.getProgramInfoLog(shaderProgram));
+                return;
+            }
+
+            gl.useProgram(shaderProgram);
+
+            // --- 3. BUFFERS EINRICHTEN ---
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+            const aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+            gl.enableVertexAttribArray(aPositionLocation);
+            gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            // --- 4. ZEICHEN / RENDERN ---
+            gl.clearColor(0.02, 0.04, 0.09, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // Zeichnen als verbundene Linien (LINE_STRIP)
+            // Wichtig: count entspricht der Anzahl der 2D-Vertices, nicht den Array-Werten!
+            gl.drawArrays(gl.LINE_STRIP, 0, totalVerticesCount);
+        });
+    </script>
+</body>
+</html>
