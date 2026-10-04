@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GVT Aufgabe 3 - Farbig gefüllte 2D Geometrie</title>
+    <style>
+        :root {
+            --bg-color: #030712;
+            --card-bg: #0f172a;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid #1e293b;
+        }
+        h1 { font-size: 1.4rem; margin-top: 0; color: #f1f5f9; }
+        p { color: #94a3b8; font-size: 0.85rem; }
+        canvas {
+            width: 450px;
+            height: 450px;
+            background-color: #000000;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            margin: 1rem 0;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.85rem;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Farbig gefüllte 2D-Geometrie: Koloriertes See-Objekt</h1>
+        <p>Erstellt mit WebGL <code>gl.TRIANGLES</code> und interpolierten Vertex-Farbverläufen.</p>
+        
+        <canvas id="glcanvas" width="450" height="450"></canvas>
+
+        <div class="stats">
+            <div>Primitiv: <code>gl.TRIANGLES</code></div>
+            <div>Gezeichnete Vertices: <span id="vertex-count">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('glcanvas');
+            const gl = canvas.getContext('webgl');
+
+            if (!gl) {
+                alert('WebGL wird nicht unterstützt!');
+                return;
+            }
+
+            const positions = [];
+            const colors = [];
+
+            function addVertex(x, y, r, g, b) {
+                positions.push(x, y);
+                colors.push(r, g, b);
+            }
+
+            // Hilfsfunktion zum Zeichnen eines farbverlaufenden Dreiecks
+            function addTriangle(p1, c1, p2, c2, p3, c3) {
+                addVertex(p1.x, p1.y, c1.r, c1.g, c1.b);
+                addVertex(p2.x, p2.y, c2.r, c2.g, c2.b);
+                addVertex(p3.x, p3.y, c3.r, c3.g, c3.b);
+            }
+
+            const arms = 5;
+            const outerR = 0.75;
+            const innerR = 0.3;
+            const coreR = 0.12;
+
+            // Farbpalette (Ozean-Töne: Tiefblau, Türkis, Koralle/Magenta)
+            const colCore = { r: 0.1, g: 0.2, b: 0.5 };
+            const colInner = { r: 0.1, g: 0.6, b: 0.8 };
+            const colOuter = { r: 0.9, g: 0.3, b: 0.6 };
+            const colTip = { r: 0.2, g: 0.9, b: 0.9 };
+
+            // Geometrie-Punkte berechnen
+            const outerPoints = [];
+            const innerPoints = [];
+
+            for (let i = 0; i < arms * 2; i++) {
+                const angle = (i * Math.PI) / arms - Math.PI / 2;
+                if (i % 2 === 0) {
+                    outerPoints.push({
+                        x: Math.cos(angle) * outerR,
+                        y: Math.sin(angle) * outerR
+                    });
+                } else {
+                    innerPoints.push({
+                        x: Math.cos(angle) * innerR,
+                        y: Math.sin(angle) * innerR
+                    });
+                }
+            }
+
+            // Dreiecke für den Stern aufbauen (Fächerstruktur vom Zentrum aus)
+            for (let i = 0; i < arms; i++) {
+                const pOut = outerPoints[i];
+                const pInCurr = innerPoints[i];
+                const pInPrev = innerPoints[(i - 1 + arms) % arms];
+                
+                const center = { x: 0.0, y: 0.0 };
+
+                // Dreieck 1: Kern zu innerem Punkt links und rechts (Zentralbereich)
+                addTriangle(center, colCore, pInPrev, colInner, pInCurr, colInner);
+
+                // Dreieck 2: Linkes Teilstück der Zacke
+                addTriangle(pInPrev, colInner, pOut, colTip, pInCurr, colInner);
+
+                // Dreieck 3: Rechtes Teilstück der Zacke mit Farbverlauf nach außen
+                addTriangle(pInCurr, colInner, pOut, colTip, { x: 0, y: 0 }, colCore); // Übergangsvariante
+            }
+
+            // Zusätzliche dekorative Füll-Dreiecke im Kern für einen harmonischen Farbverlauf
+            for (let i = 0; i < arms; i++) {
+                const angle1 = (i * 2 * Math.PI) / arms;
+                const angle2 = ((i + 1) * 2 * Math.PI) / arms;
+                
+                const p1 = { x: Math.cos(angle1) * coreR, y: Math.sin(angle1) * coreR };
+                const p2 = { x: Math.cos(angle2) * coreR, y: Math.sin(angle2) * coreR };
+                
+                addTriangle({ x: 0, y: 0 }, colCore, p1, colInner, p2, colInner);
+            }
+
+            const totalVertices = positions.length / 2;
+            document.getElementById('vertex-count').textContent = totalVertices;
+
+            // --- SHADER ---
+            const vsSource = `
+                attribute vec2 aPosition;
+                attribute vec3 aColor;
+                varying vec3 vColor;
+                void main() {
+                    gl_Position = vec4(aPosition, 0.0, 1.0);
+                    vColor = aColor;
+                }
+            `;
+
+            const fsSource = `
+                precision mediump float;
+                varying vec3 vColor;
+                void main() {
+                    gl_FragColor = vec4(vColor, 1.0);
+                }
+            `;
+
+            function createShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            }
+
+            const program = gl.createProgram();
+            gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
+            gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
+            gl.linkProgram(program);
+            gl.useProgram(program);
+
+            // --- BUFFERS ---
+            const posBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+            const posAttr = gl.getAttribLocation(program, 'aPosition');
+            gl.enableVertexAttribArray(posAttr);
+            gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
+
+            const colBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, colBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+            const colAttr = gl.getAttribLocation(program, 'aColor');
+            gl.enableVertexAttribArray(colAttr);
+            gl.vertexAttribPointer(colAttr, 3, gl.FLOAT, false, 0, 0);
+
+            // --- RENDER ---
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // Wichtig: Jetzt nutzen wir gl.TRIANGLES für farblich gefüllte Flächen!
+            gl.drawArrays(gl.TRIANGLES, 0, totalVertices);
+        });
+    </script>
+</body>
+</html>
