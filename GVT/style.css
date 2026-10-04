@@ -1,0 +1,148 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --accent: #10b981;
+    --border-radius: 12px;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 800px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+header {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 0.25rem;
+    font-size: 1.8rem;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.viewer-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 650px) {
+    .viewer-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.animation-card {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.animation-card h2 {
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 0;
+    color: #cbd5e1;
+}
+
+.sprite-container {
+    width: 150px;
+    height: 150px;
+    background: #000;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #334155;
+}
+
+/* Sprite-Sheet Definition für die Scheibe (z.B. 8 Frames horizontal: 8 * 150px = 1200px Gesamtbreite) */
+.sprite {
+    width: 150px;
+    height: 150px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="150"><rect width="1200" height="150" fill="%231e293b"/><g fill="%233b82f6"><circle cx="75" cy="75" r="60"/><rect x="70" y="15" width="10" height="50" fill="%23ffffff"/></g><g transform="translate(150,0)" fill="%233b82f6"><circle cx="75" cy="75" r="60"/><path d="M75 15 L85 75 L65 75 Z" fill="%23ffffff"/><circle cx="75" cy="75" r="10" fill="%23ef4444"/></g><g transform="translate(300,0)"><circle cx="75" cy="75" r="60" fill="%2310b981"/><polygon points="75,15 105,75 45,75" fill="%23ffffff"/></g><g transform="translate(450,0)"><circle cx="75" cy="75" r="60" fill="%23f59e0b"/><rect x="15" y="70" width="120" height="10" fill="%23ffffff"/></g><g transform="translate(600,0)"><circle cx="75" cy="75" r="60" fill="%238b5cf6"/><circle cx="75" cy="75" r="30" fill="%23ffffff"/></g><g transform="translate(750,0)"><circle cx="75" cy="75" r="60" fill="%23ec4899"/><path d="M75 15 Q105 75 75 135 Z" fill="%23ffffff"/></g><g transform="translate(900,0)"><circle cx="75" cy="75" r="60" fill="%2306b6d4"/><rect x="70" y="15" width="10" height="120" fill="%23ffffff"/></g><g transform="translate(1050,0)"><circle cx="75" cy="75" r="60" fill="%2364748b"/><circle cx="50" cy="75" r="15" fill="%23ffffff"/><circle cx="100" cy="75" r="15" fill="%23ffffff"/></g></svg>');
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+}
+
+.controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    background-color: #334155;
+    color: white;
+    border: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #475569;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+    margin: 0;
+}
+
+.documentation {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.documentation h3 {
+    margin-top: 0;
+    color: #cbd5e1;
+}
+
+.documentation ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #94a3b8;
+}
