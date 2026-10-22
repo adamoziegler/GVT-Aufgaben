@@ -39,6 +39,8 @@
         }
         h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #f1f5f9; }
         p.subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0; }
+        p.subtitle a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        p.subtitle a:hover { text-decoration: underline; }
         
         /* Navigation Tabs */
         .nav-tabs {
@@ -77,8 +79,8 @@
         .task-title { font-size: 1.1rem; color: #e2e8f0; margin: 0; text-align: center; }
 
         canvas {
-            width: 400px;
-            height: 400px;
+            width: 420px;
+            height: 420px;
             background-color: #000;
             border-radius: 12px;
             border: 2px solid #334155;
@@ -125,6 +127,9 @@
         <header>
             <h1>Graphical Visualisation Technologies</h1>
             <p class="subtitle">BHT Master-Portfolio • Adam Ziegler</p>
+            <p class="subtitle" style="margin-top: 0.4rem;">
+                Live-URL: <a href="https://adamoziegler.github.io/GVT-Aufgaben/" target="_blank">https://adamoziegler.github.io/GVT-Aufgaben/</a>
+            </p>
         </header>
 
         <!-- Navigation Tabs -->
@@ -143,4 +148,369 @@
                     <div class="disk-marker"></div>
                 </div>
             </div>
-            <div style="color: var(--accent); font-weight: bold;"
+            <div style="color: var(--accent); font-weight: bold;" id="frame-indicator">Frame: 1 / 8</div>
+            <div class="controls">
+                <button class="btn" onclick="diskPrev()">◄ Links [l]</button>
+                <button id="btn-auto" class="btn primary" onclick="diskToggleAuto()">Auto An/Aus [a]</button>
+                <button class="btn" onclick="diskNext()">Rechts [r] ►</button>
+            </div>
+            <div class="info-box">
+                <h4>Bedienung & Bewertung (8 / 8 Punkte)</h4>
+                <p>Steuerung über Tasten <strong>[l]</strong>, <strong>[r]</strong> und <strong>[a]</strong>.</p>
+            </div>
+        </div>
+
+        <!-- AUFGABE 2 & 3 -->
+        <div id="task-1" class="task-card">
+            <h2 class="task-title">Aufgabe 2 & 3: WebGL Geometrien & Füllungen</h2>
+            <canvas id="glcanvas-geo" width="420" height="420"></canvas>
+            <div class="info-box">
+                <h4>Details</h4>
+                <p>Bio-geometrischer Seestern mit <code>gl.TRIANGLES</code>.</p>
+            </div>
+        </div>
+
+        <!-- AUFGABE 4 -->
+        <div id="task-2" class="task-card">
+            <h2 class="task-title">Aufgabe 4: Parametrisierte Flächen</h2>
+            <div class="controls">
+                <button id="sbtn-0" class="btn primary" onclick="switchParamSurface(0)">1. Torus-Spirale</button>
+                <button id="sbtn-1" class="btn" onclick="switchParamSurface(1)">2. Muschel</button>
+                <button id="sbtn-2" class="btn" onclick="switchParamSurface(2)">3. Ozean-Welle</button>
+            </div>
+            <canvas id="glcanvas-param" width="420" height="420"></canvas>
+            <div id="param-info" class="info-box">
+                <h4>Fläche</h4>
+                <p>Umschalten mit Taste <strong>[B]</strong>.</p>
+            </div>
+        </div>
+
+        <!-- AUFGABE 5: KAMERA & REKURSIVE KUGEL (NEU ÜBERARBEITET) -->
+        <div id="task-3" class="task-card">
+            <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursives Kugel-Modell</h2>
+            <canvas id="glcanvas-camera" width="420" height="420"></canvas>
+            <div class="controls">
+                <button class="btn primary" onclick="adjustRecursion(-1)">Rekursion -</button>
+                <span id="recursion-level" style="font-weight:bold; color:var(--accent);">Stufe: 2</span>
+                <button class="btn primary" onclick="adjustRecursion(1)">Rekursion +</button>
+                <button class="btn" onclick="toggleWireframe()">Modus: Füllung & Linien</button>
+            </div>
+            <div class="info-box">
+                <h4>Interaktion & Tastenbelegung</h4>
+                <ul>
+                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera auf der XZ-Ebene um die Kugel kreisen lassen.</li>
+                    <li><strong>[N] / [Shift + N]:</strong> Kameraradius (Abstand) verringern / vergrößern.</li>
+                    <li><strong>Rekursionstiefe (Buttons):</strong> Live-Anpassung der Triangulation (Icosphere / Oktaeder-Verfeinerung).</li>
+                    <li><strong>Render-Modus (Button):</strong> Wechselt zwischen Dreiecks-Füllung, Liniennetz oder kombiniertem Wireframe.</li>
+                </ul>
+                <p style="margin-top:0.5rem"><strong>Wissenschaftliche Quellen & Literatur:</strong></p>
+                <ul>
+                    <li>Andreas Kähler: <a href="http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html" target="_blank" style="color:var(--accent)">Creating an Icosphere Mesh in Code</a></li>
+                    <li>Paul Bourke: <a href="http://paulbourke.net/geometry/circlesphere/" target="_blank" style="color:var(--accent)">Circles, Spheres and Ellipses</a></li>
+                    <li>3D-Meier: <a href="http://www.3d-meier.de/" target="_blank" style="color:var(--accent)">Parametrisierte Flächen und Kameratransformationen</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Switcher ---
+        function switchTab(index) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === index));
+            document.querySelectorAll('.task-card').forEach((c, i) => c.classList.toggle('active', i === index));
+            if(index === 1) { initGeoWebGL(); }
+            if(index === 2) { initParamWebGL(); }
+            if(index === 3) { initCameraApp(); setTimeout(renderCameraScene, 50); }
+        }
+
+        // --- Aufgabe 1 ---
+        let currentFrame = 0, totalFrames = 8, isAuto = false, autoTimer = null;
+        const disk = document.getElementById('css-disk');
+        const frameInd = document.getElementById('frame-indicator');
+        function updateDisk() {
+            const angle = currentFrame * (360 / totalFrames);
+            disk.style.transform = `rotate(${angle}deg)`;
+            frameInd.textContent = `Frame: ${currentFrame + 1} / ${totalFrames}`;
+        }
+        function diskNext() { currentFrame = (currentFrame + 1) % totalFrames; updateDisk(); }
+        function diskPrev() { currentFrame = (currentFrame - 1 + totalFrames) % totalFrames; updateDisk(); }
+        function diskToggleAuto() {
+            isAuto = !isAuto;
+            const btn = document.getElementById('btn-auto');
+            if(isAuto) { autoTimer = setInterval(diskNext, 150); btn.textContent = 'Stoppen [a]'; btn.classList.remove('primary'); }
+            else { clearInterval(autoTimer); btn.textContent = 'Auto An/Aus [a]'; btn.classList.add('primary'); }
+        }
+
+        // --- Globale Tastatursteuerung ---
+        window.addEventListener('keydown', (e) => {
+            const k = e.key.toLowerCase();
+            if(document.getElementById('task-0').classList.contains('active')) {
+                if(k === 'l') diskPrev();
+                if(k === 'r') diskNext();
+                if(k === 'a') diskToggleAuto();
+            }
+            if(document.getElementById('task-2').classList.contains('active')) {
+                if(k === 'b') { paramSurfaceIdx = (paramSurfaceIdx + 1) % 3; switchParamSurface(paramSurfaceIdx); }
+            }
+            if(document.getElementById('task-3').classList.contains('active')) {
+                if(e.key === 'ArrowLeft') { camAngle -= 0.12; renderCameraScene(); e.preventDefault(); }
+                if(e.key === 'ArrowRight') { camAngle += 0.12; renderCameraScene(); e.preventDefault(); }
+                if(k === 'n') {
+                    if(e.shiftKey) camDist = Math.min(10.0, camDist + 0.4);
+                    else camDist = Math.max(1.5, camDist - 0.4);
+                    renderCameraScene();
+                }
+            }
+        });
+
+        // --- Aufgabe 2 & 3 WebGL ---
+        let geoInit = false;
+        function initGeoWebGL() {
+            const canvas = document.getElementById('glcanvas-geo');
+            const gl = canvas.getContext('webgl');
+            if(!gl) return;
+            if(!geoInit) {
+                geoInit = true;
+                const pos = [], col = [];
+                function addV(x,y,r,g,b){pos.push(x,y);col.push(r,g,b);}
+                function addT(p1,c1,p2,c2,p3,c3){addV(p1.x,p1.y,c1.r,c1.g,c1.b);addV(p2.x,p2.y,c2.r,c2.g,c2.b);addV(p3.x,p3.y,c3.r,c3.g,c3.b);}
+                const arms=5, outR=0.75, inR=0.3;
+                const cCore={r:0.1,g:0.2,b:0.5}, cIn={r:0.1,g:0.6,b:0.8}, cTip={r:0.2,g:0.9,b:0.9};
+                const outP=[], inP=[];
+                for(let i=0; i<arms*2; i++){
+                    const a=(i*Math.PI)/arms - Math.PI/2;
+                    if(i%2===0) outP.push({x:Math.cos(a)*outR, y:Math.sin(a)*outR});
+                    else inP.push({x:Math.cos(a)*inR, y:Math.sin(a)*inR});
+                }
+                for(let i=0; i<arms; i++){
+                    const pOut=outP[i], pInCurr=inP[i], pInPrev=inP[(i-1+arms)%arms];
+                    addT({x:0,y:0}, cCore, pInPrev, cIn, pInCurr, cIn);
+                    addT(pInPrev, cIn, pOut, cTip, pInCurr, cIn);
+                    addT(pInCurr, cIn, pOut, cTip, {x:0,y:0}, cCore);
+                }
+                const prog = gl.createProgram();
+                const s1 = gl.createShader(gl.VERTEX_SHADER), s2 = gl.createShader(gl.FRAGMENT_SHADER);
+                gl.shaderSource(s1, `attribute vec2 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,0.0,1.0); vCol=aCol;}`); gl.compileShader(s1);
+                gl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); gl.compileShader(s2);
+                gl.attachShader(prog, s1); gl.attachShader(prog, s2); gl.linkProgram(prog); gl.useProgram(prog);
+
+                const b1 = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b1); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
+                const pLoc = gl.getAttribLocation(prog, 'aPos'); gl.enableVertexAttribArray(pLoc); gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+                const b2 = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b2); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(col), gl.STATIC_DRAW);
+                const cLoc = gl.getAttribLocation(prog, 'aCol'); gl.enableVertexAttribArray(cLoc); gl.vertexAttribPointer(cLoc, 3, gl.FLOAT, false, 0, 0);
+                gl.windowPosData = pos.length / 2;
+            }
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, gl.windowPosData);
+        }
+
+        // --- Aufgabe 4 WebGL ---
+        let paramInit = false, paramSurfaceIdx = 0, paramMode = 0;
+        let pGl, pProg, pPosBuf, pColBuf, pIdxBuf, pPosLoc, pColLoc, currentIdxCount = 0;
+        function initParamWebGL() {
+            const canvas = document.getElementById('glcanvas-param');
+            pGl = canvas.getContext('webgl'); if(!pGl) return;
+            if(!paramInit) {
+                paramInit = true;
+                pProg = pGl.createProgram();
+                const s1 = pGl.createShader(pGl.VERTEX_SHADER), s2 = pGl.createShader(pGl.FRAGMENT_SHADER);
+                pGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,1.0); vCol=aCol;}`); pGl.compileShader(s1);
+                pGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); pGl.compileShader(s2);
+                pGl.attachShader(pProg, s1); pGl.attachShader(pProg, s2); pGl.linkProgram(pProg); pGl.useProgram(pProg);
+                pPosLoc = pGl.getAttribLocation(pProg, 'aPos'); pColLoc = pGl.getAttribLocation(pProg, 'aCol');
+                pPosBuf = pGl.createBuffer(); pColBuf = pGl.createBuffer(); pIdxBuf = pGl.createBuffer();
+            }
+            renderParamSurface();
+        }
+        const surfaces = [
+            { name: "1. Torus-Spirale", func: (u, v) => { const r = 0.5 + 0.2 * Math.cos(v); return {x: r * Math.cos(u), y: r * Math.sin(u), z: 0.2 * v}; }, uM: 0, uX: Math.PI*4, uSt: 20, vM: 0, vX: Math.PI*2, vSt: 12, sc: 0.6 },
+            { name: "2. Muschel", func: (u, v) => { const a = 0.4; return {x: a*(1-u/(2*Math.PI))*Math.cos(2*u)*(1+Math.cos(v))-0.2, y: a*(1-u/(2*Math.PI))*Math.sin(2*u)*(1+Math.cos(v)), z: a*(u/(2*Math.PI))}; }, uM: 0, uX: Math.PI*2, uSt: 20, vM: 0, vX: Math.PI*2, vSt: 12, sc: 0.5 },
+            { name: "3. Ozean-Welle", func: (u, v) => ({x: u, y: Math.sin(u*3.0)*Math.cos(v*2.0)*0.4, z: v}), uM: -1.2, uX: 1.2, uSt: 20, vM: -1.2, vX: 1.2, vSt: 20, sc: 0.7 }
+        ];
+        function renderParamSurface() {
+            if(!pGl) return;
+            const s = surfaces[paramSurfaceIdx];
+            const pos = [], col = [], idx = [];
+            for (let i = 0; i <= s.uSt; i++) {
+                const u = s.uM + (i / s.uSt) * (s.uX - s.uM);
+                for (let j = 0; j <= s.vSt; j++) {
+                    const v = s.vM + (j / s.vSt) * (s.vX - s.vM);
+                    const p = s.func(u, v);
+                    pos.push(p.x * s.sc, p.y * s.sc, p.z * s.sc);
+                    col.push((p.x*s.sc+1)*0.5, (p.y*s.sc+1)*0.5, 0.8);
+                }
+            }
+            for (let i = 0; i < s.uSt; i++) {
+                for (let j = 0; j < s.vSt; j++) {
+                    const r1 = i * (s.vSt + 1), r2 = (i + 1) * (s.vSt + 1);
+                    idx.push(r1+j, r1+j+1, r2+j, r1+j+1, r2+j+1, r2+j);
+                }
+            }
+            currentIdxCount = idx.length;
+            pGl.bindBuffer(pGl.ARRAY_BUFFER, pPosBuf); pGl.bufferData(pGl.ARRAY_BUFFER, new Float32Array(pos), pGl.STATIC_DRAW);
+            pGl.enableVertexAttribArray(pPosLoc); pGl.vertexAttribPointer(pPosLoc, 3, pGl.FLOAT, false, 0, 0);
+            pGl.bindBuffer(pGl.ARRAY_BUFFER, pColBuf); pGl.bufferData(pGl.ARRAY_BUFFER, new Float32Array(col), pGl.STATIC_DRAW);
+            pGl.enableVertexAttribArray(pColLoc); pGl.vertexAttribPointer(pColLoc, 3, pGl.FLOAT, false, 0, 0);
+            pGl.bindBuffer(pGl.ELEMENT_ARRAY_BUFFER, pIdxBuf); pGl.bufferData(pGl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), pGl.STATIC_DRAW);
+
+            pGl.viewport(0, 0, pGl.canvas.width, pGl.canvas.height);
+            pGl.clearColor(0,0,0,1); pGl.clear(pGl.COLOR_BUFFER_BIT);
+            if(paramMode !== 1) pGl.drawElements(pGl.TRIANGLES, currentIdxCount, pGl.UNSIGNED_SHORT, 0);
+            if(paramMode !== 2) pGl.drawElements(pGl.LINES, currentIdxCount, pGl.UNSIGNED_SHORT, 0);
+            document.getElementById('param-info').innerHTML = `<h4>${s.name}</h4><p>Umschalten mit Taste <strong>[B]</strong></p>`;
+        }
+        function switchParamSurface(idx) {
+            paramSurfaceIdx = idx;
+            for(let i=0; i<3; i++) document.getElementById(`sbtn-${i}`).classList.toggle('active', i === idx);
+            renderParamSurface();
+        }
+
+        // --- AUFGABE 5: KAMERA & REKURSIVE KUGEL (OPTIMIERT) ---
+        let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2;
+        let cGl, cProg, cPosBuf, cColBuf, cPosLoc, cColLoc;
+
+        function initCameraApp() {
+            const canvas = document.getElementById('glcanvas-camera');
+            cGl = canvas.getContext('webgl'); if(!cGl) return;
+            if(!camInit) {
+                camInit = true;
+                cProg = cGl.createProgram();
+                const s1 = cGl.createShader(cGl.VERTEX_SHADER), s2 = cGl.createShader(cGl.FRAGMENT_SHADER);
+                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; uniform mat4 uMVP; void main(){gl_Position=uMVP*vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
+                cGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); cGl.compileShader(s2);
+                cGl.attachShader(cProg, s1); cGl.attachShader(cProg, s2); cGl.linkProgram(cProg); cGl.useProgram(cProg);
+                cPosLoc = cGl.getAttribLocation(cProg, 'aPos'); cColLoc = cGl.getAttribLocation(cProg, 'aCol');
+                cPosBuf = cGl.createBuffer(); cColBuf = cGl.createBuffer();
+            }
+            renderCameraScene();
+        }
+
+        function adjustRecursion(delta) {
+            recursionLevel = Math.max(0, Math.min(4, recursionLevel + delta));
+            document.getElementById('recursion-level').textContent = `Stufe: ${recursionLevel}`;
+            renderCameraScene();
+        }
+
+        function toggleWireframe() {
+            wireframeMode = (wireframeMode + 1) % 3;
+            const labels = ["Modus: Füllung & Linien", "Modus: Nur Linien (Wireframe)", "Modus: Nur Gefüllt"];
+            event.target.textContent = labels[wireframeMode];
+            renderCameraScene();
+        }
+
+        function generateIcosphere(recursion) {
+            let vertices = [
+                {x: 0, y: 1, z: 0}, {x: 0, y: -1, z: 0},
+                {x: 1, y: 0, z: 0}, {x: -1, y: 0, z: 0},
+                {x: 0, y: 0, z: 1}, {x: 0, y: 0, z: -1}
+            ];
+            let faces = [
+                {v1:0, v2:4, v3:2}, {v1:0, v2:2, v3:5}, {v1:0, v2:5, v3:3}, {v1:0, v2:3, v3:4},
+                {v1:1, v2:2, v3:4}, {v1:1, v2:5, v3:2}, {v1:1, v2:3, v3:5}, {v1:1, v2:4, v3:3}
+            ];
+            const cache = {};
+            function getMidPoint(i1, i2) {
+                const key = i1 < i2 ? `${i1}_${i2}` : `${i2}_${i1}`;
+                if(cache[key] !== undefined) return cache[key];
+                const p1 = vertices[i1], p2 = vertices[i2];
+                const mid = {x: (p1.x+p2.x)/2, y: (p1.y+p2.y)/2, z: (p1.z+p2.z)/2};
+                const len = Math.sqrt(mid.x*mid.x + mid.y*mid.y + mid.z*mid.z);
+                mid.x /= len; mid.y /= len; mid.z /= len;
+                vertices.push(mid);
+                return cache[key] = vertices.length - 1;
+            }
+            for(let r=0; r<recursion; r++) {
+                const newFaces = [];
+                for(let f of faces) {
+                    const a = getMidPoint(f.v1, f.v2);
+                    const b = getMidPoint(f.v2, f.v3);
+                    const c = getMidPoint(f.v3, f.v1);
+                    newFaces.push({v1:f.v1, v2:a, v3:c}, {v1:f.v2, v2:b, v3:a}, {v1:f.v3, v2:c, v3:b}, {v1:a, v2:b, v3:c});
+                }
+                faces = newFaces;
+            }
+            const pos = [], col = [];
+            for(let f of faces) {
+                for(let idx of [f.v1, f.v2, f.v3]) {
+                    const v = vertices[idx];
+                    pos.push(v.x * 0.9, v.y * 0.9, v.z * 0.9);
+                    col.push(Math.abs(v.x)*0.9 + 0.1, Math.abs(v.y)*0.6 + 0.2, 0.95);
+                }
+            }
+            return {pos, count: pos.length/3};
+        }
+
+        function multiplyMatrices(a, b) {
+            const out = new Float32Array(16);
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    out[i * 4 + j] = a[i * 4 + 0] * b[0 * 4 + j] + a[i * 4 + 1] * b[1 * 4 + j] + a[i * 4 + 2] * b[2 * 4 + j] + a[i * 4 + 3] * b[3 * 4 + j];
+                }
+            }
+            return out;
+        }
+
+        function makePerspective(fov, aspect, near, far) {
+            const f = 1.0 / Math.tan(fov / 2);
+            const out = new Float32Array(16);
+            out[0] = f / aspect; out[5] = f; out[10] = (far + near) / (near - far); out[11] = -1;
+            out[14] = (2 * far * near) / (near - far); return out;
+        }
+
+        function makeLookAt(eye, center, up) {
+            let z0=eye[0]-center[0], z1=eye[1]-center[1], z2=eye[2]-center[2];
+            let len = Math.sqrt(z0*z0+z1*z1+z2*z2); z0/=len; z1/=len; z2/=len;
+            let x0=up[1]*z2-up[2]*z1, x1=up[2]*z0-up[0]*z2, x2=up[0]*z1-up[1]*z0;
+            len = Math.sqrt(x0*x0+x1*x1+x2*x2); x0/=len; x1/=len; x2/=len;
+            let y0=z1*x2-z2*x1, y1=z2*x0-z0*x2, y2=z0*x1-z1*x0;
+            const out = new Float32Array(16);
+            out[0]=x0; out[4]=y0; out[8]=z0; out[12]=0;
+            out[1]=x1; out[5]=y1; out[9]=z1; out[13]=0;
+            out[2]=x2; out[6]=y2; out[10]=z2; out[14]=0;
+            out[12]=-(x0*eye[0]+x1*eye[1]+x2*eye[2]);
+            out[13]=-(y0*eye[0]+y1*eye[1]+y2*eye[2]);
+            out[14]=-(z0*eye[0]+z1*eye[1]+z2*eye[2]);
+            out[15]=1; return out;
+        }
+
+        function renderCameraScene() {
+            if(!cGl) return;
+            const sphere = generateIcosphere(recursionLevel);
+            
+            const eyeX = Math.sin(camAngle) * camDist;
+            const eyeZ = Math.cos(camAngle) * camDist;
+            const eye = [eyeX, 0.2, eyeZ];
+            const center = [0, 0, 0];
+            const up = [0, 1, 0];
+
+            const viewMat = makeLookAt(eye, center, up);
+            const projMat = makePerspective(Math.PI/4, 1, 0.1, 100.0);
+            const mvp = multiplyMatrices(projMat, viewMat);
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cPosBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos), cGl.STATIC_DRAW);
+            cGl.enableVertexAttribArray(cPosLoc); cGl.vertexAttribPointer(cPosLoc, 3, cGl.FLOAT, false, 0, 0);
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cColBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos.map(v => Math.abs(v))), cGl.STATIC_DRAW);
+            cGl.enableVertexAttribArray(cColLoc); cGl.vertexAttribPointer(cColLoc, 3, cGl.FLOAT, false, 0, 0);
+
+            const uLoc = cGl.getUniformLocation(cProg, 'uMVP');
+            cGl.uniformMatrix4fv(uLoc, false, mvp);
+
+            cGl.viewport(0, 0, cGl.canvas.width, cGl.canvas.height);
+            cGl.clearColor(0.02, 0.03, 0.07, 1.0);
+            cGl.clear(cGl.COLOR_BUFFER_BIT | cGl.DEPTH_BUFFER_BIT);
+            cGl.enable(cGl.DEPTH_TEST);
+
+            if(wireframeMode === 0 || wireframeMode === 2) {
+                cGl.drawArrays(cGl.TRIANGLES, 0, sphere.count);
+            }
+            if(wireframeMode === 0 || wireframeMode === 1) {
+                cGl.drawArrays(cGl.LINES, 0, sphere.count);
+            }
+        }
+    </script>
+</body>
+</html>
