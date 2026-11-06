@@ -185,7 +185,7 @@
             </div>
         </div>
 
-        <!-- AUFGABE 5: KAMERA & REKURSIVE KUGEL (NEU ÜBERARBEITET) -->
+        <!-- AUFGABE 5: KAMERA & REKURSIVE KUGEL -->
         <div id="task-3" class="task-card">
             <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursives Kugel-Modell</h2>
             <canvas id="glcanvas-camera" width="420" height="420"></canvas>
@@ -193,37 +193,31 @@
                 <button class="btn primary" onclick="adjustRecursion(-1)">Rekursion -</button>
                 <span id="recursion-level" style="font-weight:bold; color:var(--accent);">Stufe: 2</span>
                 <button class="btn primary" onclick="adjustRecursion(1)">Rekursion +</button>
-                <button class="btn" onclick="toggleWireframe()">Modus: Füllung & Linien</button>
+                <button id="btn-wireframe" class="btn" onclick="toggleWireframe()">Modus: Füllung & Linien</button>
             </div>
             <div class="info-box">
                 <h4>Interaktion & Tastenbelegung</h4>
                 <ul>
-                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera auf der XZ-Ebene um die Kugel kreisen lassen.</li>
-                    <li><strong>[N] / [Shift + N]:</strong> Kameraradius (Abstand) verringern / vergrößern.</li>
-                    <li><strong>Rekursionstiefe (Buttons):</strong> Live-Anpassung der Triangulation (Icosphere / Oktaeder-Verfeinerung).</li>
-                    <li><strong>Render-Modus (Button):</strong> Wechselt zwischen Dreiecks-Füllung, Liniennetz oder kombiniertem Wireframe.</li>
+                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera auf der XZ-Ebene um die Kugel kreisen.</li>
+                    <li><strong>[N] / [Shift + N]:</strong> Kameraradius verringern / vergrößern.</li>
+                    <li><strong>[Y] / [Shift + Y]:</strong> Kamerahöhe (Y-Achse) anheben / absenken.</li>
+                    <li><strong>Rekursionstiefe (Buttons):</strong> Live-Anpassung der Triangulation (Icosphere).</li>
                 </ul>
-                <p style="margin-top:0.5rem"><strong>Wissenschaftliche Quellen & Literatur:</strong></p>
-                <ul>
-                    <li>Andreas Kähler: <a href="http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html" target="_blank" style="color:var(--accent)">Creating an Icosphere Mesh in Code</a></li>
-                    <li>Paul Bourke: <a href="http://paulbourke.net/geometry/circlesphere/" target="_blank" style="color:var(--accent)">Circles, Spheres and Ellipses</a></li>
-                    <li>3D-Meier: <a href="http://www.3d-meier.de/" target="_blank" style="color:var(--accent)">Parametrisierte Flächen und Kameratransformationen</a></li>
-                </ul>
+                <p style="margin-top:0.5rem"><strong>Wissenschaftliche Quellen:</strong> Andreas Kähler (Icosphere), Paul Bourke, 3D-Meier.de.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Tab Switcher ---
         function switchTab(index) {
             document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === index));
             document.querySelectorAll('.task-card').forEach((c, i) => c.classList.toggle('active', i === index));
-            if(index === 1) { initGeoWebGL(); }
-            if(index === 2) { initParamWebGL(); }
-            if(index === 3) { initCameraApp(); setTimeout(renderCameraScene, 50); }
+            if(index === 1) { setTimeout(initGeoWebGL, 50); }
+            if(index === 2) { setTimeout(initParamWebGL, 50); }
+            if(index === 3) { setTimeout(() => { initCameraApp(); renderCameraScene(); }, 50); }
         }
 
-        // --- Aufgabe 1 ---
+        // Aufgabe 1
         let currentFrame = 0, totalFrames = 8, isAuto = false, autoTimer = null;
         const disk = document.getElementById('css-disk');
         const frameInd = document.getElementById('frame-indicator');
@@ -241,7 +235,6 @@
             else { clearInterval(autoTimer); btn.textContent = 'Auto An/Aus [a]'; btn.classList.add('primary'); }
         }
 
-        // --- Globale Tastatursteuerung ---
         window.addEventListener('keydown', (e) => {
             const k = e.key.toLowerCase();
             if(document.getElementById('task-0').classList.contains('active')) {
@@ -260,10 +253,15 @@
                     else camDist = Math.max(1.5, camDist - 0.4);
                     renderCameraScene();
                 }
+                if(k === 'y') {
+                    if(e.shiftKey) camHeight = Math.max(-4.0, camHeight - 0.4);
+                    else camHeight = Math.min(4.0, camHeight + 0.4);
+                    renderCameraScene();
+                }
             }
         });
 
-        // --- Aufgabe 2 & 3 WebGL ---
+        // Aufgabe 2 & 3
         let geoInit = false;
         function initGeoWebGL() {
             const canvas = document.getElementById('glcanvas-geo');
@@ -305,7 +303,7 @@
             gl.drawArrays(gl.TRIANGLES, 0, gl.windowPosData);
         }
 
-        // --- Aufgabe 4 WebGL ---
+        // Aufgabe 4
         let paramInit = false, paramSurfaceIdx = 0, paramMode = 0;
         let pGl, pProg, pPosBuf, pColBuf, pIdxBuf, pPosLoc, pColLoc, currentIdxCount = 0;
         function initParamWebGL() {
@@ -366,8 +364,8 @@
             renderParamSurface();
         }
 
-        // --- AUFGABE 5: KAMERA & REKURSIVE KUGEL (OPTIMIERT) ---
-        let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2;
+        // Aufgabe 5 (Kamera & Rekursive Kugel)
+        let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2, camHeight = 0.2;
         let cGl, cProg, cPosBuf, cColBuf, cPosLoc, cColLoc;
 
         function initCameraApp() {
@@ -383,7 +381,6 @@
                 cPosLoc = cGl.getAttribLocation(cProg, 'aPos'); cColLoc = cGl.getAttribLocation(cProg, 'aCol');
                 cPosBuf = cGl.createBuffer(); cColBuf = cGl.createBuffer();
             }
-            renderCameraScene();
         }
 
         function adjustRecursion(delta) {
@@ -395,7 +392,7 @@
         function toggleWireframe() {
             wireframeMode = (wireframeMode + 1) % 3;
             const labels = ["Modus: Füllung & Linien", "Modus: Nur Linien (Wireframe)", "Modus: Nur Gefüllt"];
-            event.target.textContent = labels[wireframeMode];
+            document.getElementById('btn-wireframe').textContent = labels[wireframeMode];
             renderCameraScene();
         }
 
@@ -480,7 +477,7 @@
             
             const eyeX = Math.sin(camAngle) * camDist;
             const eyeZ = Math.cos(camAngle) * camDist;
-            const eye = [eyeX, 0.2, eyeZ];
+            const eye = [eyeX, camHeight, eyeZ];
             const center = [0, 0, 0];
             const up = [0, 1, 0];
 
