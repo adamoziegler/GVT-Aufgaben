@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GVT Master Portfolio - Adam Ziegler</title>
+    <style>
+        :root {
+            --bg-color: #030712;
+            --card-bg: #0f172a;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+            --border: #1e293b;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .wrapper {
+            max-width: 850px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        header {
+            text-align: center;
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #f1f5f9; }
+        p.subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0; }
+        p.subtitle a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        p.subtitle a:hover { text-decoration: underline; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.4rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: #94a3b8;
+            border: 1px solid var(--border);
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { background-color: #1e293b; color: #fff; }
+        .tab-btn.active { background-color: var(--accent); color: #030712; border-color: var(--accent); }
+
+        .task-card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .task-card.active { display: flex; }
+        .task-title { font-size: 1.1rem; color: #e2e8f0; margin: 0; text-align: center; }
+
+        canvas {
+            width: 420px;
+            height: 420px;
+            background-color: #000;
+            border-radius: 12px;
+            border: 2px solid #334155;
+        }
+
+        .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; align-items: center; }
+        .btn { background: #334155; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+        .btn:hover { background: #475569; }
+        .btn.primary { background-color: var(--accent); color: #030712; font-weight: bold; }
+
+        .info-box {
+            font-size: 0.82rem; color: #94a3b8; background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2); padding: 1rem; border-radius: 8px; width: 100%; box-sizing: border-box; line-height: 1.4;
+        }
+        .info-box h4 { margin: 0 0 0.3rem 0; color: var(--accent); }
+        .info-box ul { margin: 0; padding-left: 1.2rem; }
+
+        .disk-container {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #3b82f6 30%, #1e293b 70%);
+            border-radius: 50%;
+            border: 4px solid #38bdf8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .disk-marker {
+            width: 12px; height: 100px;
+            background-color: #ef4444;
+            position: absolute;
+            top: 15px;
+            border-radius: 6px;
+            transform-origin: bottom center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Graphical Visualisation Technologies</h1>
+            <p class="subtitle">BHT Master-Portfolio • Adam Ziegler</p>
+            <p class="subtitle" style="margin-top: 0.4rem;">
+                Live-URL: <a href="https://adamoziegler.github.io/GVT-Aufgaben/" target="_blank">https://adamoziegler.github.io/GVT-Aufgaben/</a>
+            </p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab(0)">1. Animierte Scheibe</button>
+            <button class="tab-btn" onclick="switchTab(1)">2 & 3. WebGL Geometrien</button>
+            <button class="tab-btn" onclick="switchTab(2)">4. Param. Flächen</button>
+            <button class="tab-btn" onclick="switchTab(3)">5. Kamera & Rekursive Kugel</button>
+            <button class="tab-btn" onclick="switchTab(4)">6. Partikel-Kosmos</button>
+            <button class="tab-btn" onclick="switchTab(5)">7. Z-Buffer Visualisierung</button>
+            <button class="tab-btn" onclick="switchTab(6)">8. Kreislichter & Toon-Shading</button>
+        </nav>
+
+        <div id="task-0" class="task-card active">
+            <h2 class="task-title">Aufgabe 1: Interaktiv animierte Scheibe</h2>
+            <div style="padding: 20px;">
+                <div id="css-disk" class="disk-container">
+                    <div class="disk-marker"></div>
+                </div>
+            </div>
+            <div style="color: var(--accent); font-weight: bold;" id="frame-indicator">Frame: 1 / 8</div>
+            <div class="controls">
+                <button class="btn" onclick="diskPrev()">◄ Links [l]</button>
+                <button id="btn-auto" class="btn primary" onclick="diskToggleAuto()">Auto An/Aus [a]</button>
+                <button class="btn" onclick="diskNext()">Rechts [r] ►</button>
+            </div>
+            <div class="info-box">
+                <h4>Bedienung & Bewertung (8 / 8 Punkte)</h4>
+                <p>Steuerung über Tasten <strong>[l]</strong>, <strong>[r]</strong> und <strong>[a]</strong>.</p>
+            </div>
+        </div>
+
+        <div id="task-1" class="task-card">
+            <h2 class="task-title">Aufgabe 2 & 3: WebGL Geometrien & Füllungen</h2>
+            <canvas id="glcanvas-geo" width="420" height="420"></canvas>
+            <div class="info-box">
+                <h4>Details</h4>
+                <p>Bio-geometrischer Seestern mit <code>gl.TRIANGLES</code>.</p>
+            </div>
+        </div>
+
+        <div id="task-2" class="task-card">
+            <h2 class="task-title">Aufgabe 4: Parametrisierte Flächen</h2>
+            <div class="controls">
+                <button id="sbtn-0" class="btn primary" onclick="switchParamSurface(0)">1. Torus-Spirale</button>
+                <button id="sbtn-1" class="btn" onclick="switchParamSurface(1)">2. Muschel</button>
+                <button id="sbtn-2" class="btn" onclick="switchParamSurface(2)">3. Ozean-Welle</button>
+            </div>
+            <canvas id="glcanvas-param" width="420" height="420"></canvas>
+            <div id="param-info" class="info-box">
+                <h4>Fläche</h4>
+                <p>Umschalten mit Taste <strong>[B]</strong>.</p>
+            </div>
+        </div>
+
+        <div id="task-3" class="task-card">
+            <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursives Kugel-Modell</h2>
+            <canvas id="glcanvas-camera" width="420" height="420"></canvas>
+            <div class="controls">
+                <button class="btn primary" onclick="adjustRecursion(-1)">Rekursion -</button>
+                <span id="recursion-level" style="font-weight:bold; color:var(--accent);">Stufe: 2</span>
+                <button class="btn primary" onclick="adjustRecursion(1)">Rekursion +</button>
+                <button id="btn-wireframe" class="btn" onclick="toggleWireframe()">Modus: Füllung & Linien</button>
+            </div>
+            <div class="info-box">
+                <h4>Interaktion & Tastenbelegung</h4>
+                <ul>
+                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera auf der XZ-Ebene um die Kugel kreisen.</li>
+                    <li><strong>[N] / [Shift + N]:</strong> Kameraradius verringern / vergrößern.</li>
+                    <li><strong>[Y] / [Shift + Y]:</strong> Kamerahöhe (Y-Achse) anheben / absenken.</li>
+                    <li><strong>Rekursionstiefe (Buttons):</strong> Live-Anpassung der Triangulation (Icosphere).</li>
+                </ul>
+                <p style="margin-top:0.5rem"><strong>Wissenschaftliche Quellen:</strong> Andreas Kähler (Icosphere), Paul Bourke, 3D-Meier.de.</p>
+            </div>
+        </div>
+
+        <div id="task-4" class="task-card">
+            <h2 class="task-title">Aufgabe 6: Partikel-Kosmos & Orbitale Strukturen</h2>
+            <canvas id="glcanvas-particles" width="420" height="420"></canvas>
+            <div class="controls">
+                <button id="btn-particles-toggle" class="btn primary" onclick="toggleParticleSystem()">Animation: An</button>
+                <button class="btn" onclick="resetParticleSystem()">Zurücksetzen</button>
+            </div>
+            <div class="info-box">
+                <h4>Beschreibung</h4>
+                <p>Orbitale Partikel mit Bewegung, Farbschattierung und visueller Tiefenwirkung als Erweiterung des GVT-Portfolios.</p>
+            </div>
+        </div>
+
+        <div id="task-5" class="task-card">
+            <h2 class="task-title">Aufgabe 7: Z-Buffer Visualisierung</h2>
+            <canvas id="glcanvas-zbuffer" width="420" height="420"></canvas>
+            <div class="controls">
+                <button class="btn primary" onclick="resetZBufferView()">Reset</button>
+            </div>
+            <div class="info-box">
+                <h4>Interaktion</h4>
+                <ul>
+                    <li><strong>W / S:</strong> Kamera in Y-Richtung bewegen.</li>
+                    <li><strong>A / D:</strong> Kamera in X-Richtung bewegen.</li>
+                    <li><strong>Pfeiltasten Links / Rechts:</strong> Szene drehen.</li>
+                </ul>
+                <p style="margin-top:0.5rem"><strong>Ziel:</strong> Die sichtbaren Objekte werden nach ihrer Entfernung zum Betrachter als Graustufen dargestellt. Nähere Fragmente erscheinen dunkler.</p>
+                <p style="margin-top:0.5rem"><strong>Quellen:</strong> NVIDIA: Visualizing Depth Precision, WebGL/Shader-Grundlagen aus den Lerneinheiten 1–12, sowie KUF-Z-Buffer-Algorithmus.</p>
+            </div>
+        </div>
+
+        <div id="task-6" class="task-card">
+            <h2 class="task-title">Aufgabe 8: Lichter auf einer Kreisbahn mit Toon Shading</h2>
+            <canvas id="glcanvas-toon" width="420" height="420"></canvas>
+            <div class="controls">
+                <button class="btn primary" onclick="stepToonLights()">Lichtschritt [L]</button>
+                <button id="btn-toon-toggle" class="btn" onclick="toggleToonShading()">Toon-Shading: An [T]</button>
+                <span id="toon-angle" style="font-weight:bold; color:var(--accent);">Lichtwinkel: 0°</span>
+            </div>
+            <div class="info-box">
+                <h4>Interaktion und Erweiterungen</h4>
+                <ul>
+                    <li><strong>[L] / [l]:</strong> Beide unabhängigen Lichter gemeinsam schrittweise auf ihrer Kreisbahn bewegen.</li>
+                    <li><strong>[T] / [t]:</strong> Toon-Shading ein- und ausschalten.</li>
+                </ul>
+                <p style="margin-top:0.5rem">Erweiterungen: zwei dynamische Lichtquellen, farbige Grundkörper und quantisierte Beleuchtung im Fragment-Shader.</p>
+                <p style="margin-top:0.5rem"><strong>Quellen:</strong> <a href="https://en.wikipedia.org/wiki/Cel_shading" target="_blank" rel="noreferrer">Cel shading</a>, <a href="https://en.wikibooks.org/wiki/GLSL_Programming/Unity/Toon_Shading" target="_blank" rel="noreferrer">GLSL Toon Shading</a> und <a href="https://webglsamples.org/toon-shading/toon-shading.html" target="_blank" rel="noreferrer">WebGL Toon-Shading-Demo</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === index));
+            document.querySelectorAll('.task-card').forEach((c, i) => c.classList.toggle('active', i === index));
+            if(index === 1) { setTimeout(initGeoWebGL, 50); }
+            if(index === 2) { setTimeout(initParamWebGL, 50); }
+            if(index === 3) { setTimeout(() => { initCameraApp(); renderCameraScene(); }, 50); }
+            if(index === 4) { setTimeout(initParticleSystem, 50); }
+            if(index === 5) { setTimeout(initZBufferApp, 50); }
+            if(index === 6) { setTimeout(initToonApp, 50); }
+        }
+
+        let currentFrame = 0, totalFrames = 8, isAuto = false, autoTimer = null;
+        const disk = document.getElementById('css-disk');
+        const frameInd = document.getElementById('frame-indicator');
+        function updateDisk() {
+            const angle = currentFrame * (360 / totalFrames);
+            disk.style.transform = `rotate(${angle}deg)`;
+            frameInd.textContent = `Frame: ${currentFrame + 1} / ${totalFrames}`;
+        }
+        function diskNext() { currentFrame = (currentFrame + 1) % totalFrames; updateDisk(); }
+        function diskPrev() { currentFrame = (currentFrame - 1 + totalFrames) % totalFrames; updateDisk(); }
+        function diskToggleAuto() {
+            isAuto = !isAuto;
+            const btn = document.getElementById('btn-auto');
+            if(isAuto) { autoTimer = setInterval(diskNext, 150); btn.textContent = 'Stoppen [a]'; btn.classList.remove('primary'); }
+            else { clearInterval(autoTimer); btn.textContent = 'Auto An/Aus [a]'; btn.classList.add('primary'); }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            const k = e.key.toLowerCase();
+            if(document.getElementById('task-0').classList.contains('active')) {
+                if(k === 'l') diskPrev();
+                if(k === 'r') diskNext();
+                if(k === 'a') diskToggleAuto();
+            }
+            if(document.getElementById('task-2').classList.contains('active')) {
+                if(k === 'b') { paramSurfaceIdx = (paramSurfaceIdx + 1) % 3; switchParamSurface(paramSurfaceIdx); }
+            }
+            if(document.getElementById('task-3').classList.contains('active')) {
+                if(e.key === 'ArrowLeft') { camAngle -= 0.12; renderCameraScene(); e.preventDefault(); }
+                if(e.key === 'ArrowRight') { camAngle += 0.12; renderCameraScene(); e.preventDefault(); }
+                if(k === 'n') {
+                    if(e.shiftKey) camDist = Math.min(10.0, camDist + 0.4);
+                    else camDist = Math.max(1.5, camDist - 0.4);
+                    renderCameraScene();
+                }
+                if(k === 'y') {
+                    if(e.shiftKey) camHeight = Math.max(-4.0, camHeight - 0.4);
+                    else camHeight = Math.min(4.0, camHeight + 0.4);
+                    renderCameraScene();
+                }
+            }
+            if(document.getElementById('task-5').classList.contains('active')) {
+                const speed = 0.12;
+                if(k === 'w') { zBufferState.cameraY += speed; renderZBufferScene(); }
+                if(k === 's') { zBufferState.cameraY -= speed; renderZBufferScene(); }
+                if(k === 'a') { zBufferState.cameraX -= speed; renderZBufferScene(); }
+                if(k === 'd') { zBufferState.cameraX += speed; renderZBufferScene(); }
+                if(e.key === 'ArrowLeft') { zBufferState.yaw += 0.08; renderZBufferScene(); e.preventDefault(); }
+                if(e.key === 'ArrowRight') { zBufferState.yaw -= 0.08; renderZBufferScene(); e.preventDefault(); }
+            }
+            if(document.getElementById('task-6').classList.contains('active')) {
+                if(k === 'l') { stepToonLights(); e.preventDefault(); }
+                if(k === 't') { toggleToonShading(); e.preventDefault(); }
+            }
+        });
+
+        let zBufferState = {
+            gl: null,
+            program: null,
+            positions: null,
+            count: 0,
+            init: false,
+            cameraX: 0,
+            cameraY: 0,
+            yaw: 0.5
+        };
+
+        function resetZBufferView() {
+            zBufferState.cameraX = 0;
+            zBufferState.cameraY = 0;
+            zBufferState.yaw = 0.5;
+            renderZBufferScene();
+        }
+
+        function initZBufferApp() {
+            const canvas = document.getElementById('glcanvas-zbuffer');
+            const gl = canvas.getContext('webgl');
+            if(!gl) return;
+
+            const state = zBufferState;
+            state.gl = gl;
+
+            if(!state.init) {
+                const vertexShaderSource = `
+                    attribute vec3 aPos;
+                    uniform mat4 uMatrix;
+                    void main() {
+                        gl_Position = uMatrix * vec4(aPos, 1.0);
+                    }
+                `;
+                const fragmentShaderSource = `
+                    precision mediump float;
+                    uniform float uNear;
+                    uniform float uFar;
+                    void main() {
+                        float ndcDepth = gl_FragCoord.z * 2.0 - 1.0;
+                        float linearDepth = (2.0 * uNear * uFar) / (uFar + uNear - ndcDepth * (uFar - uNear));
+                        float gray = clamp((linearDepth - uNear) / (uFar - uNear), 0.0, 1.0);
+                        gl_FragColor = vec4(vec3(gray), 1.0);
+                    }
+                `;
+
+                const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+                const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+                gl.shaderSource(vertexShader, vertexShaderSource);
+                gl.shaderSource(fragmentShader, fragmentShaderSource);
+                gl.compileShader(vertexShader);
+                gl.compileShader(fragmentShader);
+
+                state.program = gl.createProgram();
+                gl.attachShader(state.program, vertexShader);
+                gl.attachShader(state.program, fragmentShader);
+                gl.linkProgram(state.program);
+
+                const posBuffer = gl.createBuffer();
+                state.positions = posBuffer;
+                state.init = true;
+            }
+
+            renderZBufferScene();
+        }
+
+        function rotatePoint(point, ax, ay) {
+            let x = point[0], y = point[1], z = point[2];
+            const cosY = Math.cos(ay), sinY = Math.sin(ay);
+            const x1 = x * cosY + z * sinY;
+            const z1 = -x * sinY + z * cosY;
+            x = x1; z = z1;
+            const cosX = Math.cos(ax), sinX = Math.sin(ax);
+            const y1 = y * cosX - z * sinX;
+            const z2 = y * sinX + z * cosX;
+            return [x, y1, z2];
+        }
+
+        function addBox(vertices, center, size, rx, ry) {
+            const [cx, cy, cz] = center;
+            const [sx, sy, sz] = size;
+            const corners = [
+                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+                [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
+            ];
+            const faces = [
+                [0, 1, 2, 3], [4, 5, 6, 7], [0, 4, 7, 3], [1, 5, 6, 2], [3, 2, 6, 7], [0, 1, 5, 4]
+            ];
+
+            for (const face of faces) {
+                const base = face.map(index => {
+                    const p = corners[index];
+                    const x = p[0] * sx * 0.5;
+                    const y = p[1] * sy * 0.5;
+                    const z = p[2] * sz * 0.5;
+                    const r = rotatePoint([x, y, z], rx, ry);
+                    return [r[0] + cx, r[1] + cy, r[2] + cz];
+                });
+                vertices.push(base[0][0], base[0][1], base[0][2], base[1][0], base[1][1], base[1][2], base[2][0], base[2][1], base[2][2]);
+                vertices.push(base[0][0], base[0][1], base[0][2], base[2][0], base[2][1], base[2][2], base[3][0], base[3][1], base[3][2]);
+            }
+        }
+
+        function addPyramid(vertices, center, radius, height, rx, ry) {
+            const [cx, cy, cz] = center;
+            const base = [
+                [-1, -1, 0], [1, -1, 0], [1, 1, 0], [-1, 1, 0],
+                [0, 0, height]
+            ];
+            const faces = [
+                [0, 1, 4], [1, 2, 4], [2, 3, 4], [3, 0, 4],
+                [0, 3, 2], [0, 2, 1]
+            ];
+
+            for (const face of faces) {
+                const points = face.map(index => {
+                    let p = base[index];
+                    p = [p[0] * radius, p[1] * radius, p[2] * radius];
+                    const r = rotatePoint(p, rx, ry);
+                    return [r[0] + cx, r[1] + cy, r[2] + cz];
+                });
+                vertices.push(points[0][0], points[0][1], points[0][2], points[1][0], points[1][1], points[1][2], points[2][0], points[2][1], points[2][2]);
+            }
+        }
+
+        function addOctahedron(vertices, center, radius, rx, ry) {
+            const verts = [
+                [0, 1, 0], [1, 0, 0], [0, 0, 1], [-1, 0, 0], [0, 0, -1], [0, -1, 0]
+            ];
+            const faces = [
+                [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1],
+                [5, 1, 2], [5, 2, 3], [5, 3, 4], [5, 4, 1]
+            ];
+            for (const face of faces) {
+                const points = face.map(index => {
+                    let p = verts[index];
+                    const r = rotatePoint([p[0] * radius, p[1] * radius, p[2] * radius], rx, ry);
+                    return [r[0] + center[0], r[1] + center[1], r[2] + center[2]];
+                });
+                vertices.push(points[0][0], points[0][1], points[0][2], points[1][0], points[1][1], points[1][2], points[2][0], points[2][1], points[2][2]);
+            }
+        }
+
+        function buildZBufferScene() {
+            const vertices = [];
+            addBox(vertices, [-0.9, -0.3, -0.4], [1.1, 1.1, 1.1], 0.55, 0.8);
+            addPyramid(vertices, [0.3, 0.2, -1.1], 1.0, 1.65, 0.9, 0.2);
+            addOctahedron(vertices, [0.9, -0.6, 0.3], 0.9, -0.7, 0.4);
+            return new Float32Array(vertices);
+        }
+
+        function mat4RotationY(angle) {
+            const c = Math.cos(angle), s = Math.sin(angle);
+            return new Float32Array([
+                c, 0, -s, 0,
+                0, 1, 0, 0,
+                s, 0, c, 0,
+                0, 0, 0, 1
+            ]);
+        }
+
+        function renderZBufferScene() {
+            const state = zBufferState;
+            const gl = state.gl;
+            if(!gl || !state.program) return;
+
+            if(!state.positions) return;
+
+            const scene = buildZBufferScene();
+            const eye = [state.cameraX, state.cameraY, 4.5];
+            const viewMatrix = makeLookAt(eye, [0, 0, 0], [0, 1, 0]);
+            const projectionMatrix = makePerspective(Math.PI / 3, 1, 0.1, 8.0);
+            const modelMatrix = mat4RotationY(state.yaw);
+            const modelViewProj = multiplyMatrices(projectionMatrix, multiplyMatrices(viewMatrix, modelMatrix));
+
+            gl.useProgram(state.program);
+            gl.bindBuffer(gl.ARRAY_BUFFER, state.positions);
+            gl.bufferData(gl.ARRAY_BUFFER, scene, gl.STATIC_DRAW);
+
+            const posLoc = gl.getAttribLocation(state.program, 'aPos');
+            const matrixLoc = gl.getUniformLocation(state.program, 'uMatrix');
+            const nearLoc = gl.getUniformLocation(state.program, 'uNear');
+            const farLoc = gl.getUniformLocation(state.program, 'uFar');
+
+            gl.enableVertexAttribArray(posLoc);
+            gl.vertexAttribPointer(posLoc, 3, gl.FLOAT, false, 0, 0);
+            gl.uniformMatrix4fv(matrixLoc, false, modelViewProj);
+            gl.uniform1f(nearLoc, 0.1);
+            gl.uniform1f(farLoc, 8.0);
+
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.clearColor(0.02, 0.03, 0.06, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, scene.length / 3);
+        }
+
+        const toonState = {
+            gl: null,
+            program: null,
+            initialized: false,
+            buffer: null,
+            markerBuffer: null,
+            vertexCount: 0,
+            lightAngle: 0,
+            toonEnabled: true,
+            locations: null
+        };
+
+        function toonLights() {
+            const radius = 3.0;
+            return [
+                [Math.cos(toonState.lightAngle) * radius, 1.8, Math.sin(toonState.lightAngle) * radius],
+                [Math.cos(toonState.lightAngle + Math.PI) * radius, 1.25, Math.sin(toonState.lightAngle + Math.PI) * radius]
+            ];
+        }
+
+        function buildToonGeometry() {
+            const data = [];
+            const addVertex = (position, normal, color) => data.push(...position, ...normal, ...color);
+            const addTriangle = (p1, p2, p3, n1, n2, n3, color) => {
+                addVertex(p1, n1, color);
+                addVertex(p2, n2, color);
+                addVertex(p3, n3, color);
+            };
+
+            function addSphere(center, radius, color, rows = 22, columns = 30) {
+                const point = (row, column) => {
+                    const v = Math.PI * row / rows;
+                    const u = 2 * Math.PI * column / columns;
+                    const normal = [Math.sin(v) * Math.cos(u), Math.cos(v), Math.sin(v) * Math.sin(u)];
+                    return {
+                        position: [center[0] + normal[0] * radius, center[1] + normal[1] * radius, center[2] + normal[2] * radius],
+                        normal
+                    };
+                };
+                for (let row = 0; row < rows; row++) {
+                    for (let column = 0; column < columns; column++) {
+                        const a = point(row, column), b = point(row + 1, column);
+                        const c = point(row + 1, column + 1), d = point(row, column + 1);
+                        addTriangle(a.position, b.position, c.position, a.normal, b.normal, c.normal, color);
+                        addTriangle(a.position, c.position, d.position, a.normal, c.normal, d.normal, color);
+                    }
+                }
+            }
+
+            function addCube(center, size, color) {
+                const h = size / 2;
+                const faces = [
+                    { n: [0, 0, 1], p: [[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]] },
+                    { n: [0, 0, -1], p: [[1,-1,-1],[-1,-1,-1],[-1,1,-1],[1,1,-1]] },
+                    { n: [1, 0, 0], p: [[1,-1,1],[1,-1,-1],[1,1,-1],[1,1,1]] },
+                    { n: [-1, 0, 0], p: [[-1,-1,-1],[-1,-1,1],[-1,1,1],[-1,1,-1]] },
+                    { n: [0, 1, 0], p: [[-1,1,1],[1,1,1],[1,1,-1],[-1,1,-1]] },
+                    { n: [0, -1, 0], p: [[-1,-1,-1],[1,-1,-1],[1,-1,1],[-1,-1,1]] }
+                ];
+                for (const face of faces) {
+                    const points = face.p.map(p => [center[0] + p[0] * h, center[1] + p[1] * h, center[2] + p[2] * h]);
+                    addTriangle(points[0], points[1], points[2], face.n, face.n, face.n, color);
+                    addTriangle(points[0], points[2], points[3], face.n, face.n, face.n, color);
+                }
+            }
+
+            function addTorus(center, majorRadius, minorRadius, color, rings = 32, sides = 12) {
+                const point = (ring, side) => {
+                    const u = 2 * Math.PI * ring / rings;
+                    const v = 2 * Math.PI * side / sides;
+                    const radial = majorRadius + minorRadius * Math.cos(v);
+                    const normal = [Math.cos(v) * Math.cos(u), Math.sin(v), Math.cos(v) * Math.sin(u)];
+                    return {
+                        position: [center[0] + radial * Math.cos(u), center[1] + minorRadius * Math.sin(v), center[2] + radial * Math.sin(u)],
+                        normal
+                    };
+                };
+                for (let ring = 0; ring < rings; ring++) {
+                    for (let side = 0; side < sides; side++) {
+                        const a = point(ring, side), b = point(ring + 1, side);
+                        const c = point(ring + 1, side + 1), d = point(ring, side + 1);
+                        addTriangle(a.position, b.position, c.position, a.normal, b.normal, c.normal, color);
+                        addTriangle(a.position, c.position, d.position, a.normal, c.normal, d.normal, color);
+                    }
+                }
+            }
+
+            addSphere([-1.0, 0.15, 0.05], 0.78, [0.95, 0.18, 0.12]);
+            addCube([0.85, 0.05, -0.1], 1.32, [0.98, 0.68, 0.12]);
+            addTorus([0.0, -0.62, 0.72], 0.75, 0.24, [0.12, 0.72, 0.48]);
+            return new Float32Array(data);
+        }
+
+        function buildToonLightMarkers(lights) {
+            const data = [];
+            const addMarker = (center, color) => {
+                const rows = 10, columns = 14, radius = 0.12;
+                const vertex = (row, column) => {
+                    const v = Math.PI * row / rows;
+                    const u = 2 * Math.PI * column / columns;
+                    const normal = [Math.sin(v) * Math.cos(u), Math.cos(v), Math.sin(v) * Math.sin(u)];
+                    return [center[0] + normal[0] * radius, center[1] + normal[1] * radius, center[2] + normal[2] * radius, ...normal, ...color];
+                };
+                for (let row = 0; row < rows; row++) {
+                    for (let column = 0; column < columns; column++) {
+                        data.push(...vertex(row, column), ...vertex(row + 1, column), ...vertex(row + 1, column + 1));
+                        data.push(...vertex(row, column), ...vertex(row + 1, column + 1), ...vertex(row, column + 1));
+                    }
+                }
+            };
+            addMarker(lights[0], [1.0, 0.38, 0.12]);
+            addMarker(lights[1], [0.18, 0.72, 1.0]);
+            return new Float32Array(data);
+        }
+
+        function initToonApp() {
+            const canvas = document.getElementById('glcanvas-toon');
+            const gl = canvas.getContext('webgl');
+            if (!gl) {
+                document.getElementById('toon-angle').textContent = 'WebGL ist nicht verfügbar.';
+                return;
+            }
+            toonState.gl = gl;
+
+            if (!toonState.initialized) {
+                const vertexSource = `
+                    attribute vec3 aPosition;
+                    attribute vec3 aNormal;
+                    attribute vec3 aColor;
+                    uniform mat4 uViewProjection;
+                    varying vec3 vPosition;
+                    varying vec3 vNormal;
+                    varying vec3 vColor;
+                    void main() {
+                        vPosition = aPosition;
+                        vNormal = aNormal;
+                        vColor = aColor;
+                        gl_Position = uViewProjection * vec4(aPosition, 1.0);
+                    }
+                `;
+                const fragmentSource = `
+                    precision mediump float;
+                    uniform vec3 uLightOne;
+                    uniform vec3 uLightTwo;
+                    uniform float uToonEnabled;
+                    uniform float uEmissive;
+                    varying vec3 vPosition;
+                    varying vec3 vNormal;
+                    varying vec3 vColor;
+                    void main() {
+                        if (uEmissive > 0.5) {
+                            gl_FragColor = vec4(vColor, 1.0);
+                            return;
+                        }
+                        vec3 normal = normalize(vNormal);
+                        vec3 lightOne = normalize(uLightOne - vPosition);
+                        vec3 lightTwo = normalize(uLightTwo - vPosition);
+                        float diffuse = max(dot(normal, lightOne), 0.0) * 0.62 + max(dot(normal, lightTwo), 0.0) * 0.62;
+                        float intensity = clamp(0.16 + diffuse, 0.0, 1.0);
+                        if (uToonEnabled > 0.5) {
+                            intensity = intensity > 0.82 ? 1.0 : intensity > 0.58 ? 0.76 : intensity > 0.34 ? 0.52 : 0.28;
+                        }
+                        gl_FragColor = vec4(vColor * intensity, 1.0);
+                    }
+                `;
+                const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+                const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+                gl.shaderSource(vertexShader, vertexSource);
+                gl.shaderSource(fragmentShader, fragmentSource);
+                gl.compileShader(vertexShader);
+                gl.compileShader(fragmentShader);
+                if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS) || !gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+                    document.getElementById('toon-angle').textContent = 'Shader-Fehler: ' + (gl.getShaderInfoLog(vertexShader) || gl.getShaderInfoLog(fragmentShader));
+                    return;
+                }
+                toonState.program = gl.createProgram();
+                gl.attachShader(toonState.program, vertexShader);
+                gl.attachShader(toonState.program, fragmentShader);
+                gl.linkProgram(toonState.program);
+                if (!gl.getProgramParameter(toonState.program, gl.LINK_STATUS)) {
+                    document.getElementById('toon-angle').textContent = 'Programmfehler: ' + gl.getProgramInfoLog(toonState.program);
+                    return;
+                }
+                toonState.buffer = gl.createBuffer();
+                toonState.markerBuffer = gl.createBuffer();
+                toonState.locations = {
+                    position: gl.getAttribLocation(toonState.program, 'aPosition'),
+                    normal: gl.getAttribLocation(toonState.program, 'aNormal'),
+                    color: gl.getAttribLocation(toonState.program, 'aColor'),
+                    viewProjection: gl.getUniformLocation(toonState.program, 'uViewProjection'),
+                    lightOne: gl.getUniformLocation(toonState.program, 'uLightOne'),
+                    lightTwo: gl.getUniformLocation(toonState.program, 'uLightTwo'),
+                    toonEnabled: gl.getUniformLocation(toonState.program, 'uToonEnabled'),
+                    emissive: gl.getUniformLocation(toonState.program, 'uEmissive')
+                };
+                const geometry = buildToonGeometry();
+                toonState.vertexCount = geometry.length / 9;
+                gl.bindBuffer(gl.ARRAY_BUFFER, toonState.buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, geometry, gl.STATIC_DRAW);
+                toonState.initialized = true;
+            }
+            renderToonScene();
+        }
+
+        function bindToonAttributes(buffer) {
+            const gl = toonState.gl;
+            const locations = toonState.locations;
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(locations.position);
+            gl.vertexAttribPointer(locations.position, 3, gl.FLOAT, false, 36, 0);
+            gl.enableVertexAttribArray(locations.normal);
+            gl.vertexAttribPointer(locations.normal, 3, gl.FLOAT, false, 36, 12);
+            gl.enableVertexAttribArray(locations.color);
+            gl.vertexAttribPointer(locations.color, 3, gl.FLOAT, false, 36, 24);
+        }
+
+        function renderToonScene() {
+            const state = toonState;
+            const gl = state.gl;
+            if (!gl || !state.initialized) return;
+            const canvas = gl.canvas;
+            const lights = toonLights();
+            const eye = [3.7, 3.0, 6.2];
+            const view = makeLookAt(eye, [0, -0.05, 0.1], [0, 1, 0]);
+            const projection = makePerspective(Math.PI / 3.2, canvas.width / canvas.height, 0.1, 20.0);
+            const viewProjection = multiplyMatrices(projection, view);
+            gl.useProgram(state.program);
+            gl.uniformMatrix4fv(state.locations.viewProjection, false, viewProjection);
+            gl.uniform3fv(state.locations.lightOne, lights[0]);
+            gl.uniform3fv(state.locations.lightTwo, lights[1]);
+            gl.uniform1f(state.locations.toonEnabled, state.toonEnabled ? 1 : 0);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.clearColor(0.025, 0.035, 0.065, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.uniform1f(state.locations.emissive, 0);
+            bindToonAttributes(state.buffer);
+            gl.drawArrays(gl.TRIANGLES, 0, state.vertexCount);
+
+            const markerData = buildToonLightMarkers(lights);
+            gl.bindBuffer(gl.ARRAY_BUFFER, state.markerBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, markerData, gl.DYNAMIC_DRAW);
+            gl.uniform1f(state.locations.emissive, 1);
+            bindToonAttributes(state.markerBuffer);
+            gl.drawArrays(gl.TRIANGLES, 0, markerData.length / 9);
+            document.getElementById('toon-angle').textContent = `Lichtwinkel: ${Math.round((state.lightAngle * 180 / Math.PI) % 360)}°`;
+            document.getElementById('btn-toon-toggle').textContent = `Toon-Shading: ${state.toonEnabled ? 'An' : 'Aus'} [T]`;
+        }
+
+        function stepToonLights() {
+            toonState.lightAngle = (toonState.lightAngle + Math.PI / 12) % (Math.PI * 2);
+            renderToonScene();
+        }
+
+        function toggleToonShading() {
+            toonState.toonEnabled = !toonState.toonEnabled;
+            renderToonScene();
+        }
+
+        let geoInit = false;
+        function initGeoWebGL() {
+            const canvas = document.getElementById('glcanvas-geo');
+            const gl = canvas.getContext('webgl');
+            if(!gl) return;
+            if(!geoInit) {
+                geoInit = true;
+                const pos = [], col = [];
+                function addV(x,y,r,g,b){pos.push(x,y);col.push(r,g,b);}
+                function addT(p1,c1,p2,c2,p3,c3){addV(p1.x,p1.y,c1.r,c1.g,c1.b);addV(p2.x,p2.y,c2.r,c2.g,c2.b);addV(p3.x,p3.y,c3.r,c3.g,c3.b);}
+                const arms=5, outR=0.75, inR=0.3;
+                const cCore={r:0.1,g:0.2,b:0.5}, cIn={r:0.1,g:0.6,b:0.8}, cTip={r:0.2,g:0.9,b:0.9};
+                const outP=[], inP=[];
+                for(let i=0; i<arms*2; i++){
+                    const a=(i*Math.PI)/arms - Math.PI/2;
+                    if(i%2===0) outP.push({x:Math.cos(a)*outR, y:Math.sin(a)*outR});
+                    else inP.push({x:Math.cos(a)*inR, y:Math.sin(a)*inR});
+                }
+                for(let i=0; i<arms; i++){
+                    const pOut=outP[i], pInCurr=inP[i], pInPrev=inP[(i-1+arms)%arms];
+                    addT({x:0,y:0}, cCore, pInPrev, cIn, pInCurr, cIn);
+                    addT(pInPrev, cIn, pOut, cTip, pInCurr, cIn);
+                    addT(pInCurr, cIn, pOut, cTip, {x:0,y:0}, cCore);
+                }
+                const prog = gl.createProgram();
+                const s1 = gl.createShader(gl.VERTEX_SHADER), s2 = gl.createShader(gl.FRAGMENT_SHADER);
+                gl.shaderSource(s1, `attribute vec2 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,0.0,1.0); vCol=aCol;}`); gl.compileShader(s1);
+                gl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); gl.compileShader(s2);
+                gl.attachShader(prog, s1); gl.attachShader(prog, s2); gl.linkProgram(prog); gl.useProgram(prog);
+
+                const b1 = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b1); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
+                const pLoc = gl.getAttribLocation(prog, 'aPos'); gl.enableVertexAttribArray(pLoc); gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+                const b2 = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b2); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(col), gl.STATIC_DRAW);
+                const cLoc = gl.getAttribLocation(prog, 'aCol'); gl.enableVertexAttribArray(cLoc); gl.vertexAttribPointer(cLoc, 3, gl.FLOAT, false, 0, 0);
+                gl.windowPosData = pos.length / 2;
+            }
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, gl.windowPosData);
+        }
+
+        let paramInit = false, paramSurfaceIdx = 0, paramMode = 0;
+        let pGl, pProg, pPosBuf, pColBuf, pIdxBuf, pPosLoc, pColLoc, currentIdxCount = 0;
+        function initParamWebGL() {
+            const canvas = document.getElementById('glcanvas-param');
+            pGl = canvas.getContext('webgl'); if(!pGl) return;
+            if(!paramInit) {
+                paramInit = true;
+                pProg = pGl.createProgram();
+                const s1 = pGl.createShader(pGl.VERTEX_SHADER), s2 = pGl.createShader(pGl.FRAGMENT_SHADER);
+                pGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,1.0); vCol=aCol;}`); pGl.compileShader(s1);
+                pGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); pGl.compileShader(s2);
+                pGl.attachShader(pProg, s1); pGl.attachShader(pProg, s2); pGl.linkProgram(pProg); pGl.useProgram(pProg);
+                pPosLoc = pGl.getAttribLocation(pProg, 'aPos'); pColLoc = pGl.getAttribLocation(pProg, 'aCol');
+                pPosBuf = pGl.createBuffer(); pColBuf = pGl.createBuffer(); pIdxBuf = pGl.createBuffer();
+            }
+            renderParamSurface();
+        }
+        const surfaces = [
+            { name: "1. Torus-Spirale", func: (u, v) => { const r = 0.5 + 0.2 * Math.cos(v); return {x: r * Math.cos(u), y: r * Math.sin(u), z: 0.2 * v}; }, uM: 0, uX: Math.PI*4, uSt: 20, vM: 0, vX: Math.PI*2, vSt: 12, sc: 0.6 },
+            { name: "2. Muschel", func: (u, v) => { const a = 0.4; return {x: a*(1-u/(2*Math.PI))*Math.cos(2*u)*(1+Math.cos(v))-0.2, y: a*(1-u/(2*Math.PI))*Math.sin(2*u)*(1+Math.cos(v)), z: a*(u/(2*Math.PI))}; }, uM: 0, uX: Math.PI*2, uSt: 20, vM: 0, vX: Math.PI*2, vSt: 12, sc: 0.5 },
+            { name: "3. Ozean-Welle", func: (u, v) => ({x: u, y: Math.sin(u*3.0)*Math.cos(v*2.0)*0.4, z: v}), uM: -1.2, uX: 1.2, uSt: 20, vM: -1.2, vX: 1.2, vSt: 20, sc: 0.7 }
+        ];
+        function renderParamSurface() {
+            if(!pGl) return;
+            const s = surfaces[paramSurfaceIdx];
+            const pos = [], col = [], idx = [];
+            for (let i = 0; i <= s.uSt; i++) {
+                const u = s.uM + (i / s.uSt) * (s.uX - s.uM);
+                for (let j = 0; j <= s.vSt; j++) {
+                    const v = s.vM + (j / s.vSt) * (s.vX - s.vM);
+                    const p = s.func(u, v);
+                    pos.push(p.x * s.sc, p.y * s.sc, p.z * s.sc);
+                    col.push((p.x*s.sc+1)*0.5, (p.y*s.sc+1)*0.5, 0.8);
+                }
+            }
+            for (let i = 0; i < s.uSt; i++) {
+                for (let j = 0; j < s.vSt; j++) {
+                    const r1 = i * (s.vSt + 1), r2 = (i + 1) * (s.vSt + 1);
+                    idx.push(r1+j, r1+j+1, r2+j, r1+j+1, r2+j+1, r2+j);
+                }
+            }
+            currentIdxCount = idx.length;
+            pGl.bindBuffer(pGl.ARRAY_BUFFER, pPosBuf); pGl.bufferData(pGl.ARRAY_BUFFER, new Float32Array(pos), pGl.STATIC_DRAW);
+            pGl.enableVertexAttribArray(pPosLoc); pGl.vertexAttribPointer(pPosLoc, 3, pGl.FLOAT, false, 0, 0);
+            pGl.bindBuffer(pGl.ARRAY_BUFFER, pColBuf); pGl.bufferData(pGl.ARRAY_BUFFER, new Float32Array(col), pGl.STATIC_DRAW);
+            pGl.enableVertexAttribArray(pColLoc); pGl.vertexAttribPointer(pColLoc, 3, pGl.FLOAT, false, 0, 0);
+            pGl.bindBuffer(pGl.ELEMENT_ARRAY_BUFFER, pIdxBuf); pGl.bufferData(pGl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), pGl.STATIC_DRAW);
+
+            pGl.viewport(0, 0, pGl.canvas.width, pGl.canvas.height);
+            pGl.clearColor(0,0,0,1); pGl.clear(pGl.COLOR_BUFFER_BIT);
+            if(paramMode !== 1) pGl.drawElements(pGl.TRIANGLES, currentIdxCount, pGl.UNSIGNED_SHORT, 0);
+            if(paramMode !== 2) pGl.drawElements(pGl.LINES, currentIdxCount, pGl.UNSIGNED_SHORT, 0);
+            document.getElementById('param-info').innerHTML = `<h4>${s.name}</h4><p>Umschalten mit Taste <strong>[B]</strong></p>`;
+        }
+        function switchParamSurface(idx) {
+            paramSurfaceIdx = idx;
+            for(let i=0; i<3; i++) document.getElementById(`sbtn-${i}`).classList.toggle('active', i === idx);
+            renderParamSurface();
+        }
+
+        let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2, camHeight = 0.2;
+        let cGl, cProg, cPosBuf, cColBuf, cPosLoc, cColLoc;
+
+        function initCameraApp() {
+            const canvas = document.getElementById('glcanvas-camera');
+            cGl = canvas.getContext('webgl'); if(!cGl) return;
+            if(!camInit) {
+                camInit = true;
+                cProg = cGl.createProgram();
+                const s1 = cGl.createShader(cGl.VERTEX_SHADER), s2 = cGl.createShader(cGl.FRAGMENT_SHADER);
+                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
+                cGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); cGl.compileShader(s2);
+                cGl.attachShader(cProg, s1); cGl.attachShader(cProg, s2); cGl.linkProgram(cProg); cGl.useProgram(cProg);
+                cPosLoc = cGl.getAttribLocation(cProg, 'aPos'); cColLoc = cGl.getAttribLocation(cProg, 'aCol');
+                cPosBuf = cGl.createBuffer(); cColBuf = cGl.createBuffer();
+            }
+        }
+
+        function adjustRecursion(delta) {
+            recursionLevel = Math.max(0, Math.min(4, recursionLevel + delta));
+            document.getElementById('recursion-level').textContent = `Stufe: ${recursionLevel}`;
+            renderCameraScene();
+        }
+
+        function toggleWireframe() {
+            wireframeMode = (wireframeMode + 1) % 3;
+            const labels = ["Modus: Füllung & Linien", "Modus: Nur Linien (Wireframe)", "Modus: Nur Gefüllt"];
+            document.getElementById('btn-wireframe').textContent = labels[wireframeMode];
+            renderCameraScene();
+        }
+
+        let particleState = null;
+        function initParticleSystem() {
+            const canvas = document.getElementById('glcanvas-particles');
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 30 + Math.random() * 120;
+                const speed = 0.008 + Math.random() * 0.02;
+                particles.push({
+                    angle,
+                    radius,
+                    speed,
+                    size: 1.5 + Math.random() * 3,
+                    hue: 180 + Math.random() * 120,
+                    drift: (Math.random() - 0.5) * 0.8
+                });
+            }
+            particleState = { canvas, ctx, particles, running: true, t: 0 };
+            document.getElementById('btn-particles-toggle').textContent = 'Animation: An';
+            renderParticleSystem();
+        }
+
+        function renderParticleSystem() {
+            if (!particleState || !particleState.running) return;
+            const { canvas, ctx, particles } = particleState;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            particleState.t += 0.018;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(2, 6, 23, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const orbit = p.radius + Math.sin(particleState.t * 1.4 + i) * 18;
+                const x = centerX + Math.cos(p.angle + particleState.t * p.speed * 80 + i * 0.3) * orbit;
+                const y = centerY + Math.sin(p.angle + particleState.t * p.speed * 80 + i * 0.4) * orbit * 0.9;
+
+                ctx.beginPath();
+                ctx.fillStyle = `hsla(${p.hue}, 90%, 70%, 0.9)`;
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (i % 3 === 0) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `hsla(${(p.hue + 40) % 360}, 80%, 70%, 0.3)`;
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+            }
+
+            requestAnimationFrame(renderParticleSystem);
+        }
+
+        function toggleParticleSystem() {
+            if (!particleState) {
+                initParticleSystem();
+            }
+            particleState.running = !particleState.running;
+            const btn = document.getElementById('btn-particles-toggle');
+            btn.textContent = particleState.running ? 'Animation: An' : 'Animation: Aus';
+            if (particleState.running) {
+                renderParticleSystem();
+            }
+        }
+
+        function resetParticleSystem() {
+            initParticleSystem();
+        }
+
+        function generateIcosphere(recursion) {
+            let vertices = [
+                {x: 0, y: 1, z: 0}, {x: 0, y: -1, z: 0},
+                {x: 1, y: 0, z: 0}, {x: -1, y: 0, z: 0},
+                {x: 0, y: 0, z: 1}, {x: 0, y: 0, z: -1}
+            ];
+            let faces = [
+                {v1:0, v2:4, v3:2}, {v1:0, v2:2, v3:5}, {v1:0, v2:5, v3:3}, {v1:0, v2:3, v3:4},
+                {v1:1, v2:2, v3:4}, {v1:1, v2:5, v3:2}, {v1:1, v2:3, v3:5}, {v1:1, v2:4, v3:3}
+            ];
+            const cache = {};
+            function getMidPoint(i1, i2) {
+                const key = i1 < i2 ? `${i1}_${i2}` : `${i2}_${i1}`;
+                if(cache[key] !== undefined) return cache[key];
+                const p1 = vertices[i1], p2 = vertices[i2];
+                const mid = {x: (p1.x+p2.x)/2, y: (p1.y+p2.y)/2, z: (p1.z+p2.z)/2};
+                const len = Math.sqrt(mid.x*mid.x + mid.y*mid.y + mid.z*mid.z);
+                mid.x /= len; mid.y /= len; mid.z /= len;
+                vertices.push(mid);
+                return cache[key] = vertices.length - 1;
+            }
+            for(let r=0; r<recursion; r++) {
+                const newFaces = [];
+                for(let f of faces) {
+                    const a = getMidPoint(f.v1, f.v2);
+                    const b = getMidPoint(f.v2, f.v3);
+                    const c = getMidPoint(f.v3, f.v1);
+                    newFaces.push({v1:f.v1, v2:a, v3:c}, {v1:f.v2, v2:b, v3:a}, {v1:f.v3, v2:c, v3:b}, {v1:a, v2:b, v3:c});
+                }
+                faces = newFaces;
+            }
+            const pos = [], col = [];
+            for(let f of faces) {
+                for(let idx of [f.v1, f.v2, f.v3]) {
+                    const v = vertices[idx];
+                    pos.push(v.x * 0.9, v.y * 0.9, v.z * 0.9);
+                    col.push(Math.abs(v.x)*0.9 + 0.1, Math.abs(v.y)*0.6 + 0.2, 0.95);
+                }
+            }
+            return {pos, count: pos.length/3};
+        }
+
+        function multiplyMatrices(a, b) {
+            const out = new Float32Array(16);
+            for (let col = 0; col < 4; col++) {
+                for (let row = 0; row < 4; row++) {
+                    out[row + col * 4] =
+                        a[0 + row] * b[col * 4 + 0] +
+                        a[4 + row] * b[col * 4 + 1] +
+                        a[8 + row] * b[col * 4 + 2] +
+                        a[12 + row] * b[col * 4 + 3];
+                }
+            }
+            return out;
+        }
+
+        function makePerspective(fov, aspect, near, far) {
+            const f = 1.0 / Math.tan(fov / 2);
+            const out = new Float32Array(16);
+            out[0] = f / aspect;
+            out[5] = f;
+            out[10] = (far + near) / (near - far);
+            out[11] = -1;
+            out[14] = (2 * far * near) / (near - far);
+            return out;
+        }
+
+        function normalize(v) {
+            const len = Math.hypot(v[0], v[1], v[2]) || 1;
+            return [v[0] / len, v[1] / len, v[2] / len];
+        }
+
+        function dot(a, b) {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        function cross(a, b) {
+            return [
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ];
+        }
+
+        function makeLookAt(eye, center, up) {
+            const zAxis = normalize([eye[0] - center[0], eye[1] - center[1], eye[2] - center[2]]);
+            const xAxis = normalize(cross(up, zAxis));
+            const yAxis = cross(zAxis, xAxis);
+
+            const out = new Float32Array(16);
+            out[0] = xAxis[0];
+            out[1] = yAxis[0];
+            out[2] = zAxis[0];
+            out[3] = 0;
+
+            out[4] = xAxis[1];
+            out[5] = yAxis[1];
+            out[6] = zAxis[1];
+            out[7] = 0;
+
+            out[8] = xAxis[2];
+            out[9] = yAxis[2];
+            out[10] = zAxis[2];
+            out[11] = 0;
+
+            out[12] = -dot(xAxis, eye);
+            out[13] = -dot(yAxis, eye);
+            out[14] = -dot(zAxis, eye);
+            out[15] = 1;
+            return out;
+        }
+
+        function renderCameraScene() {
+            if(!cGl) return;
+            const sphere = generateIcosphere(recursionLevel);
+
+            const eyeX = Math.sin(camAngle) * camDist;
+            const eyeZ = Math.cos(camAngle) * camDist;
+            const eye = [eyeX, camHeight, eyeZ];
+            const center = [0, 0, 0];
+            const up = [0, 1, 0];
+
+            const forward = normalize([center[0] - eye[0], center[1] - eye[1], center[2] - eye[2]]);
+            const right = normalize(cross(up, forward));
+            const cameraUp = cross(forward, right);
+
+            const projected = [];
+            const colors = [];
+            const maxDistance = camDist + 1.5;
+
+            for (let i = 0; i < sphere.pos.length; i += 3) {
+                const v = [sphere.pos[i], sphere.pos[i + 1], sphere.pos[i + 2]];
+                const dx = v[0] - eye[0];
+                const dy = v[1] - eye[1];
+                const dz = v[2] - eye[2];
+                const x = dx * right[0] + dy * right[1] + dz * right[2];
+                const y = dx * cameraUp[0] + dy * cameraUp[1] + dz * cameraUp[2];
+                const z = dx * forward[0] + dy * forward[1] + dz * forward[2];
+
+                if (z <= 0.15 || z > maxDistance) continue;
+
+                const f = 1.2 / Math.tan(Math.PI / 8);
+                const sx = (x / z) * f;
+                const sy = (y / z) * f;
+                projected.push(sx, sy, 0.0);
+                colors.push(Math.abs(v[0]) * 0.7 + 0.2, Math.abs(v[1]) * 0.7 + 0.2, 0.95);
+            }
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cPosBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(projected), cGl.STATIC_DRAW);
+            cGl.enableVertexAttribArray(cPosLoc); cGl.vertexAttribPointer(cPosLoc, 3, cGl.FLOAT, false, 0, 0);
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cColBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(colors), cGl.STATIC_DRAW);
+            cGl.enableVertexAttribArray(cColLoc); cGl.vertexAttribPointer(cColLoc, 3, cGl.FLOAT, false, 0, 0);
+
+            cGl.viewport(0, 0, cGl.canvas.width, cGl.canvas.height);
+            cGl.clearColor(0.02, 0.03, 0.07, 1.0);
+            cGl.clear(cGl.COLOR_BUFFER_BIT | cGl.DEPTH_BUFFER_BIT);
+            cGl.enable(cGl.DEPTH_TEST);
+
+            const drawCount = projected.length / 3;
+            if (wireframeMode === 0 || wireframeMode === 2) {
+                cGl.drawArrays(cGl.TRIANGLES, 0, drawCount);
+            }
+            if (wireframeMode === 0 || wireframeMode === 1) {
+                cGl.drawArrays(cGl.LINES, 0, drawCount);
+            }
+        }
+    </script>
+</body>
+</html>
