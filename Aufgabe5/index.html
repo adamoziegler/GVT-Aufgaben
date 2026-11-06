@@ -41,8 +41,7 @@
         p.subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0; }
         p.subtitle a { color: var(--accent); text-decoration: none; font-weight: 600; }
         p.subtitle a:hover { text-decoration: underline; }
-        
-        /* Navigation Tabs */
+
         .nav-tabs {
             display: flex;
             gap: 0.4rem;
@@ -63,7 +62,6 @@
         .tab-btn:hover { background-color: #1e293b; color: #fff; }
         .tab-btn.active { background-color: var(--accent); color: #030712; border-color: var(--accent); }
 
-        /* Task Container */
         .task-card {
             background-color: var(--card-bg);
             padding: 1.5rem;
@@ -98,7 +96,6 @@
         .info-box h4 { margin: 0 0 0.3rem 0; color: var(--accent); }
         .info-box ul { margin: 0; padding-left: 1.2rem; }
 
-        /* Aufgabe 1 CSS Disk Styling */
         .disk-container {
             width: 300px; height: 300px;
             background: radial-gradient(circle, #3b82f6 30%, #1e293b 70%);
@@ -132,7 +129,6 @@
             </p>
         </header>
 
-        <!-- Navigation Tabs -->
         <nav class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab(0)">1. Animierte Scheibe</button>
             <button class="tab-btn" onclick="switchTab(1)">2 & 3. WebGL Geometrien</button>
@@ -140,7 +136,6 @@
             <button class="tab-btn" onclick="switchTab(3)">5. Kamera & Rekursive Kugel</button>
         </nav>
 
-        <!-- AUFGABE 1 -->
         <div id="task-0" class="task-card active">
             <h2 class="task-title">Aufgabe 1: Interaktiv animierte Scheibe</h2>
             <div style="padding: 20px;">
@@ -160,7 +155,6 @@
             </div>
         </div>
 
-        <!-- AUFGABE 2 & 3 -->
         <div id="task-1" class="task-card">
             <h2 class="task-title">Aufgabe 2 & 3: WebGL Geometrien & Füllungen</h2>
             <canvas id="glcanvas-geo" width="420" height="420"></canvas>
@@ -170,7 +164,6 @@
             </div>
         </div>
 
-        <!-- AUFGABE 4 -->
         <div id="task-2" class="task-card">
             <h2 class="task-title">Aufgabe 4: Parametrisierte Flächen</h2>
             <div class="controls">
@@ -185,7 +178,6 @@
             </div>
         </div>
 
-        <!-- AUFGABE 5: KAMERA & REKURSIVE KUGEL -->
         <div id="task-3" class="task-card">
             <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursives Kugel-Modell</h2>
             <canvas id="glcanvas-camera" width="420" height="420"></canvas>
@@ -217,7 +209,6 @@
             if(index === 3) { setTimeout(() => { initCameraApp(); renderCameraScene(); }, 50); }
         }
 
-        // Aufgabe 1
         let currentFrame = 0, totalFrames = 8, isAuto = false, autoTimer = null;
         const disk = document.getElementById('css-disk');
         const frameInd = document.getElementById('frame-indicator');
@@ -261,7 +252,6 @@
             }
         });
 
-        // Aufgabe 2 & 3
         let geoInit = false;
         function initGeoWebGL() {
             const canvas = document.getElementById('glcanvas-geo');
@@ -303,7 +293,6 @@
             gl.drawArrays(gl.TRIANGLES, 0, gl.windowPosData);
         }
 
-        // Aufgabe 4
         let paramInit = false, paramSurfaceIdx = 0, paramMode = 0;
         let pGl, pProg, pPosBuf, pColBuf, pIdxBuf, pPosLoc, pColLoc, currentIdxCount = 0;
         function initParamWebGL() {
@@ -364,7 +353,6 @@
             renderParamSurface();
         }
 
-        // Aufgabe 5 (Kamera & Rekursive Kugel)
         let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2, camHeight = 0.2;
         let cGl, cProg, cPosBuf, cColBuf, cPosLoc, cColLoc;
 
@@ -375,7 +363,7 @@
                 camInit = true;
                 cProg = cGl.createProgram();
                 const s1 = cGl.createShader(cGl.VERTEX_SHADER), s2 = cGl.createShader(cGl.FRAGMENT_SHADER);
-                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; uniform mat4 uMVP; void main(){gl_Position=uMVP*vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
+                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
                 cGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); cGl.compileShader(s2);
                 cGl.attachShader(cProg, s1); cGl.attachShader(cProg, s2); cGl.linkProgram(cProg); cGl.useProgram(cProg);
                 cPosLoc = cGl.getAttribLocation(cProg, 'aPos'); cColLoc = cGl.getAttribLocation(cProg, 'aCol');
@@ -440,9 +428,13 @@
 
         function multiplyMatrices(a, b) {
             const out = new Float32Array(16);
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
-                    out[i * 4 + j] = a[i * 4 + 0] * b[0 * 4 + j] + a[i * 4 + 1] * b[1 * 4 + j] + a[i * 4 + 2] * b[2 * 4 + j] + a[i * 4 + 3] * b[3 * 4 + j];
+            for (let col = 0; col < 4; col++) {
+                for (let row = 0; row < 4; row++) {
+                    out[row + col * 4] =
+                        a[0 + row] * b[col * 4 + 0] +
+                        a[4 + row] * b[col * 4 + 1] +
+                        a[8 + row] * b[col * 4 + 2] +
+                        a[12 + row] * b[col * 4 + 3];
                 }
             }
             return out;
@@ -451,61 +443,114 @@
         function makePerspective(fov, aspect, near, far) {
             const f = 1.0 / Math.tan(fov / 2);
             const out = new Float32Array(16);
-            out[0] = f / aspect; out[5] = f; out[10] = (far + near) / (near - far); out[11] = -1;
-            out[14] = (2 * far * near) / (near - far); return out;
+            out[0] = f / aspect;
+            out[5] = f;
+            out[10] = (far + near) / (near - far);
+            out[11] = -1;
+            out[14] = (2 * far * near) / (near - far);
+            return out;
+        }
+
+        function normalize(v) {
+            const len = Math.hypot(v[0], v[1], v[2]) || 1;
+            return [v[0] / len, v[1] / len, v[2] / len];
+        }
+
+        function dot(a, b) {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        function cross(a, b) {
+            return [
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ];
         }
 
         function makeLookAt(eye, center, up) {
-            let z0=eye[0]-center[0], z1=eye[1]-center[1], z2=eye[2]-center[2];
-            let len = Math.sqrt(z0*z0+z1*z1+z2*z2); z0/=len; z1/=len; z2/=len;
-            let x0=up[1]*z2-up[2]*z1, x1=up[2]*z0-up[0]*z2, x2=up[0]*z1-up[1]*z0;
-            len = Math.sqrt(x0*x0+x1*x1+x2*x2); x0/=len; x1/=len; x2/=len;
-            let y0=z1*x2-z2*x1, y1=z2*x0-z0*x2, y2=z0*x1-z1*x0;
+            const zAxis = normalize([eye[0] - center[0], eye[1] - center[1], eye[2] - center[2]]);
+            const xAxis = normalize(cross(up, zAxis));
+            const yAxis = cross(zAxis, xAxis);
+
             const out = new Float32Array(16);
-            out[0]=x0; out[4]=y0; out[8]=z0; out[12]=0;
-            out[1]=x1; out[5]=y1; out[9]=z1; out[13]=0;
-            out[2]=x2; out[6]=y2; out[10]=z2; out[14]=0;
-            out[12]=-(x0*eye[0]+x1*eye[1]+x2*eye[2]);
-            out[13]=-(y0*eye[0]+y1*eye[1]+y2*eye[2]);
-            out[14]=-(z0*eye[0]+z1*eye[1]+z2*eye[2]);
-            out[15]=1; return out;
+            out[0] = xAxis[0];
+            out[1] = xAxis[1];
+            out[2] = xAxis[2];
+            out[3] = 0;
+
+            out[4] = yAxis[0];
+            out[5] = yAxis[1];
+            out[6] = yAxis[2];
+            out[7] = 0;
+
+            out[8] = -zAxis[0];
+            out[9] = -zAxis[1];
+            out[10] = -zAxis[2];
+            out[11] = 0;
+
+            out[12] = -dot(xAxis, eye);
+            out[13] = -dot(yAxis, eye);
+            out[14] = dot(zAxis, eye);
+            out[15] = 1;
+            return out;
         }
 
         function renderCameraScene() {
             if(!cGl) return;
             const sphere = generateIcosphere(recursionLevel);
-            
+
             const eyeX = Math.sin(camAngle) * camDist;
             const eyeZ = Math.cos(camAngle) * camDist;
             const eye = [eyeX, camHeight, eyeZ];
             const center = [0, 0, 0];
             const up = [0, 1, 0];
 
-            const viewMat = makeLookAt(eye, center, up);
-            const projMat = makePerspective(Math.PI/4, 1, 0.1, 100.0);
-            const mvp = multiplyMatrices(projMat, viewMat);
+            const forward = normalize([center[0] - eye[0], center[1] - eye[1], center[2] - eye[2]]);
+            const right = normalize(cross(up, forward));
+            const cameraUp = cross(forward, right);
+
+            const projected = [];
+            const colors = [];
+            const maxDistance = camDist + 1.5;
+
+            for (let i = 0; i < sphere.pos.length; i += 3) {
+                const v = [sphere.pos[i], sphere.pos[i + 1], sphere.pos[i + 2]];
+                const dx = v[0] - eye[0];
+                const dy = v[1] - eye[1];
+                const dz = v[2] - eye[2];
+                const x = dx * right[0] + dy * right[1] + dz * right[2];
+                const y = dx * cameraUp[0] + dy * cameraUp[1] + dz * cameraUp[2];
+                const z = dx * forward[0] + dy * forward[1] + dz * forward[2];
+
+                if (z <= 0.15 || z > maxDistance) continue;
+
+                const f = 1.2 / Math.tan(Math.PI / 8);
+                const sx = (x / z) * f;
+                const sy = (y / z) * f;
+                projected.push(sx, sy, 0.0);
+                colors.push(Math.abs(v[0]) * 0.7 + 0.2, Math.abs(v[1]) * 0.7 + 0.2, 0.95);
+            }
 
             cGl.bindBuffer(cGl.ARRAY_BUFFER, cPosBuf);
-            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos), cGl.STATIC_DRAW);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(projected), cGl.STATIC_DRAW);
             cGl.enableVertexAttribArray(cPosLoc); cGl.vertexAttribPointer(cPosLoc, 3, cGl.FLOAT, false, 0, 0);
 
             cGl.bindBuffer(cGl.ARRAY_BUFFER, cColBuf);
-            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos.map(v => Math.abs(v))), cGl.STATIC_DRAW);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(colors), cGl.STATIC_DRAW);
             cGl.enableVertexAttribArray(cColLoc); cGl.vertexAttribPointer(cColLoc, 3, cGl.FLOAT, false, 0, 0);
-
-            const uLoc = cGl.getUniformLocation(cProg, 'uMVP');
-            cGl.uniformMatrix4fv(uLoc, false, mvp);
 
             cGl.viewport(0, 0, cGl.canvas.width, cGl.canvas.height);
             cGl.clearColor(0.02, 0.03, 0.07, 1.0);
             cGl.clear(cGl.COLOR_BUFFER_BIT | cGl.DEPTH_BUFFER_BIT);
             cGl.enable(cGl.DEPTH_TEST);
 
-            if(wireframeMode === 0 || wireframeMode === 2) {
-                cGl.drawArrays(cGl.TRIANGLES, 0, sphere.count);
+            const drawCount = projected.length / 3;
+            if (wireframeMode === 0 || wireframeMode === 2) {
+                cGl.drawArrays(cGl.TRIANGLES, 0, drawCount);
             }
-            if(wireframeMode === 0 || wireframeMode === 1) {
-                cGl.drawArrays(cGl.LINES, 0, sphere.count);
+            if (wireframeMode === 0 || wireframeMode === 1) {
+                cGl.drawArrays(cGl.LINES, 0, drawCount);
             }
         }
     </script>
