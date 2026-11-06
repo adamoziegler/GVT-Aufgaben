@@ -17,7 +17,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -28,24 +28,23 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
         }
         header {
             text-align: center;
             background-color: var(--card-bg);
-            padding: 1.2rem;
+            padding: 1.5rem;
             border-radius: 16px;
             border: 1px solid var(--border);
         }
-        h1 { margin: 0 0 0.3rem 0; font-size: 1.4rem; color: #f1f5f9; }
-        p.subtitle { color: #94a3b8; font-size: 0.82rem; margin: 0; }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #f1f5f9; }
+        p.subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0; }
         p.subtitle a { color: var(--accent); text-decoration: none; font-weight: 600; }
         p.subtitle a:hover { text-decoration: underline; }
-        
-        /* Navigation Tabs */
+
         .nav-tabs {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.4rem;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -53,54 +52,52 @@
             background-color: var(--card-bg);
             color: #94a3b8;
             border: 1px solid var(--border);
-            padding: 0.5rem 0.8rem;
-            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.2s;
         }
         .tab-btn:hover { background-color: #1e293b; color: #fff; }
         .tab-btn.active { background-color: var(--accent); color: #030712; border-color: var(--accent); }
 
-        /* Task Container */
         .task-card {
             background-color: var(--card-bg);
-            padding: 1.2rem;
+            padding: 1.5rem;
             border-radius: 16px;
             border: 1px solid var(--border);
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 0.8rem;
+            gap: 1rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
         }
         .task-card.active { display: flex; }
-        .task-title { font-size: 1.05rem; color: #e2e8f0; margin: 0; text-align: center; }
+        .task-title { font-size: 1.1rem; color: #e2e8f0; margin: 0; text-align: center; }
 
         canvas {
-            width: 400px;
-            height: 400px;
+            width: 420px;
+            height: 420px;
             background-color: #000;
             border-radius: 12px;
             border: 2px solid #334155;
         }
 
         .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; align-items: center; }
-        .btn { background: #334155; color: white; border: none; padding: 0.45rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+        .btn { background: #334155; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
         .btn:hover { background: #475569; }
         .btn.primary { background-color: var(--accent); color: #030712; font-weight: bold; }
 
         .info-box {
-            font-size: 0.8rem; color: #94a3b8; background: rgba(56, 189, 248, 0.05);
-            border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.8rem; border-radius: 8px; width: 100%; box-sizing: border-box; line-height: 1.35;
+            font-size: 0.82rem; color: #94a3b8; background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2); padding: 1rem; border-radius: 8px; width: 100%; box-sizing: border-box; line-height: 1.4;
         }
-        .info-box h4 { margin: 0 0 0.2rem 0; color: var(--accent); }
-        .info-box ul { margin: 0; padding-left: 1.1rem; }
+        .info-box h4 { margin: 0 0 0.3rem 0; color: var(--accent); }
+        .info-box ul { margin: 0; padding-left: 1.2rem; }
 
-        /* Aufgabe 1 CSS Disk Styling */
         .disk-container {
-            width: 260px; height: 260px;
+            width: 300px; height: 300px;
             background: radial-gradient(circle, #3b82f6 30%, #1e293b 70%);
             border-radius: 50%;
             border: 4px solid #38bdf8;
@@ -112,11 +109,11 @@
             transition: transform 0.3s ease;
         }
         .disk-marker {
-            width: 10px; height: 85px;
+            width: 12px; height: 100px;
             background-color: #ef4444;
             position: absolute;
             top: 15px;
-            border-radius: 5px;
+            border-radius: 6px;
             transform-origin: bottom center;
         }
     </style>
@@ -127,24 +124,22 @@
         <header>
             <h1>Graphical Visualisation Technologies</h1>
             <p class="subtitle">BHT Master-Portfolio • Adam Ziegler</p>
-            <p class="subtitle" style="margin-top: 0.3rem;">
+            <p class="subtitle" style="margin-top: 0.4rem;">
                 Live-URL: <a href="https://adamoziegler.github.io/GVT-Aufgaben/" target="_blank">https://adamoziegler.github.io/GVT-Aufgaben/</a>
             </p>
         </header>
 
-        <!-- Navigation Tabs -->
         <nav class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab(0)">1. Scheibe</button>
-            <button class="tab-btn" onclick="switchTab(1)">2 & 3. Geometrie</button>
+            <button class="tab-btn active" onclick="switchTab(0)">1. Animierte Scheibe</button>
+            <button class="tab-btn" onclick="switchTab(1)">2 & 3. WebGL Geometrien</button>
             <button class="tab-btn" onclick="switchTab(2)">4. Param. Flächen</button>
-            <button class="tab-btn" onclick="switchTab(3)">5. Kamera & Kugel</button>
-            <button class="tab-btn" onclick="switchTab(4)">6. Fliegende Kugeln</button>
+            <button class="tab-btn" onclick="switchTab(3)">5. Kamera & Rekursive Kugel</button>
+            <button class="tab-btn" onclick="switchTab(4)">6. Partikel-Kosmos</button>
         </nav>
 
-        <!-- AUFGABE 1 -->
         <div id="task-0" class="task-card active">
             <h2 class="task-title">Aufgabe 1: Interaktiv animierte Scheibe</h2>
-            <div style="padding: 10px;">
+            <div style="padding: 20px;">
                 <div id="css-disk" class="disk-container">
                     <div class="disk-marker"></div>
                 </div>
@@ -161,17 +156,15 @@
             </div>
         </div>
 
-        <!-- AUFGABE 2 & 3 -->
         <div id="task-1" class="task-card">
             <h2 class="task-title">Aufgabe 2 & 3: WebGL Geometrien & Füllungen</h2>
-            <canvas id="glcanvas-geo" width="400" height="400"></canvas>
+            <canvas id="glcanvas-geo" width="420" height="420"></canvas>
             <div class="info-box">
                 <h4>Details</h4>
                 <p>Bio-geometrischer Seestern mit <code>gl.TRIANGLES</code>.</p>
             </div>
         </div>
 
-        <!-- AUFGABE 4 -->
         <div id="task-2" class="task-card">
             <h2 class="task-title">Aufgabe 4: Parametrisierte Flächen</h2>
             <div class="controls">
@@ -179,17 +172,16 @@
                 <button id="sbtn-1" class="btn" onclick="switchParamSurface(1)">2. Muschel</button>
                 <button id="sbtn-2" class="btn" onclick="switchParamSurface(2)">3. Ozean-Welle</button>
             </div>
-            <canvas id="glcanvas-param" width="400" height="400"></canvas>
+            <canvas id="glcanvas-param" width="420" height="420"></canvas>
             <div id="param-info" class="info-box">
                 <h4>Fläche</h4>
                 <p>Umschalten mit Taste <strong>[B]</strong>.</p>
             </div>
         </div>
 
-        <!-- AUFGABE 5 -->
         <div id="task-3" class="task-card">
-            <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursive Kugel</h2>
-            <canvas id="glcanvas-camera" width="400" height="400"></canvas>
+            <h2 class="task-title">Aufgabe 5: Kamerabewegung & Rekursives Kugel-Modell</h2>
+            <canvas id="glcanvas-camera" width="420" height="420"></canvas>
             <div class="controls">
                 <button class="btn primary" onclick="adjustRecursion(-1)">Rekursion -</button>
                 <span id="recursion-level" style="font-weight:bold; color:var(--accent);">Stufe: 2</span>
@@ -199,28 +191,25 @@
             <div class="info-box">
                 <h4>Interaktion & Tastenbelegung</h4>
                 <ul>
-                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera um die Kugel kreisen.</li>
+                    <li><strong>Pfeiltasten Links / Rechts:</strong> Kamera auf der XZ-Ebene um die Kugel kreisen.</li>
                     <li><strong>[N] / [Shift + N]:</strong> Kameraradius verringern / vergrößern.</li>
-                    <li><strong>[Y] / [Shift + Y]:</strong> Kamerahöhe anheben / absenken.</li>
+                    <li><strong>[Y] / [Shift + Y]:</strong> Kamerahöhe (Y-Achse) anheben / absenken.</li>
+                    <li><strong>Rekursionstiefe (Buttons):</strong> Live-Anpassung der Triangulation (Icosphere).</li>
                 </ul>
+                <p style="margin-top:0.5rem"><strong>Wissenschaftliche Quellen:</strong> Andreas Kähler (Icosphere), Paul Bourke, 3D-Meier.de.</p>
             </div>
         </div>
 
-        <!-- AUFGABE 6: FLIEGENDE KUGELN & ANIMIERTER TORUS -->
         <div id="task-4" class="task-card">
-            <h2 class="task-title">Aufgabe 6: Objekte bewegen – Fliegende Kugeln & Torus</h2>
-            <canvas id="glcanvas-spheres" width="400" height="400"></canvas>
+            <h2 class="task-title">Aufgabe 6: Partikel-Kosmos & Orbitale Strukturen</h2>
+            <canvas id="glcanvas-particles" width="420" height="420"></canvas>
             <div class="controls">
-                <button id="btn-spheres-toggle" class="btn primary" onclick="toggleSpheresAnimation()">Animation Ein/Aus [k]</button>
-                <button class="btn" onclick="stepSpheresAnimation()">Einzelschritt [k]</button>
+                <button id="btn-particles-toggle" class="btn primary" onclick="toggleParticleSystem()">Animation: An</button>
+                <button class="btn" onclick="resetParticleSystem()">Zurücksetzen</button>
             </div>
             <div class="info-box">
-                <h4>Interaktion & Dokumentation</h4>
-                <ul>
-                    <li><strong>Taste [k] / Button:</strong> Animation ein-/ausschalten oder schrittweise fortführen.</li>
-                    <li><strong>Erweiterung (+4 Pkt):</strong> Der Torus rotiert synchron um seine Achsen, während vier farbige Kugeln kollisionsfrei durch den Tubus fliegen. Unter dem Objekt befindet sich ein perspektivisches Gitter.</li>
-                </ul>
-                <p style="margin-top:0.3rem"><strong>Quellen:</strong> WebGL Fundamentals (Transformationen & Animation), TFM Lehrmaterial.</p>
+                <h4>Beschreibung</h4>
+                <p>Orbitale Partikel mit Bewegung, Farbschattierung und visueller Tiefenwirkung als Erweiterung des GVT-Portfolios.</p>
             </div>
         </div>
     </div>
@@ -232,10 +221,9 @@
             if(index === 1) { setTimeout(initGeoWebGL, 50); }
             if(index === 2) { setTimeout(initParamWebGL, 50); }
             if(index === 3) { setTimeout(() => { initCameraApp(); renderCameraScene(); }, 50); }
-            if(index === 4) { setTimeout(() => { initSpheresApp(); if(!spheresRunning) renderSpheresScene(); }, 50); }
+            if(index === 4) { setTimeout(initParticleSystem, 50); }
         }
 
-        // Aufgabe 1
         let currentFrame = 0, totalFrames = 8, isAuto = false, autoTimer = null;
         const disk = document.getElementById('css-disk');
         const frameInd = document.getElementById('frame-indicator');
@@ -277,12 +265,8 @@
                     renderCameraScene();
                 }
             }
-            if(document.getElementById('task-4').classList.contains('active')) {
-                if(k === 'k') { toggleSpheresAnimation(); e.preventDefault(); }
-            }
         });
 
-        // Aufgabe 2 & 3
         let geoInit = false;
         function initGeoWebGL() {
             const canvas = document.getElementById('glcanvas-geo');
@@ -324,7 +308,6 @@
             gl.drawArrays(gl.TRIANGLES, 0, gl.windowPosData);
         }
 
-        // Aufgabe 4
         let paramInit = false, paramSurfaceIdx = 0, paramMode = 0;
         let pGl, pProg, pPosBuf, pColBuf, pIdxBuf, pPosLoc, pColLoc, currentIdxCount = 0;
         function initParamWebGL() {
@@ -385,9 +368,9 @@
             renderParamSurface();
         }
 
-        // Aufgabe 5
         let camInit = false, recursionLevel = 2, wireframeMode = 0, camAngle = 0, camDist = 3.2, camHeight = 0.2;
         let cGl, cProg, cPosBuf, cColBuf, cPosLoc, cColLoc;
+
         function initCameraApp() {
             const canvas = document.getElementById('glcanvas-camera');
             cGl = canvas.getContext('webgl'); if(!cGl) return;
@@ -395,27 +378,110 @@
                 camInit = true;
                 cProg = cGl.createProgram();
                 const s1 = cGl.createShader(cGl.VERTEX_SHADER), s2 = cGl.createShader(cGl.FRAGMENT_SHADER);
-                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; uniform mat4 uMVP; void main(){gl_Position=uMVP*vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
+                cGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; void main(){gl_Position=vec4(aPos,1.0); vCol=aCol;}`); cGl.compileShader(s1);
                 cGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); cGl.compileShader(s2);
                 cGl.attachShader(cProg, s1); cGl.attachShader(cProg, s2); cGl.linkProgram(cProg); cGl.useProgram(cProg);
                 cPosLoc = cGl.getAttribLocation(cProg, 'aPos'); cColLoc = cGl.getAttribLocation(cProg, 'aCol');
                 cPosBuf = cGl.createBuffer(); cColBuf = cGl.createBuffer();
             }
         }
+
         function adjustRecursion(delta) {
             recursionLevel = Math.max(0, Math.min(4, recursionLevel + delta));
             document.getElementById('recursion-level').textContent = `Stufe: ${recursionLevel}`;
             renderCameraScene();
         }
+
         function toggleWireframe() {
             wireframeMode = (wireframeMode + 1) % 3;
             const labels = ["Modus: Füllung & Linien", "Modus: Nur Linien (Wireframe)", "Modus: Nur Gefüllt"];
             document.getElementById('btn-wireframe').textContent = labels[wireframeMode];
             renderCameraScene();
         }
+
+        let particleState = null;
+        function initParticleSystem() {
+            const canvas = document.getElementById('glcanvas-particles');
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 30 + Math.random() * 120;
+                const speed = 0.008 + Math.random() * 0.02;
+                particles.push({
+                    angle,
+                    radius,
+                    speed,
+                    size: 1.5 + Math.random() * 3,
+                    hue: 180 + Math.random() * 120,
+                    drift: (Math.random() - 0.5) * 0.8
+                });
+            }
+            particleState = { canvas, ctx, particles, running: true, t: 0 };
+            document.getElementById('btn-particles-toggle').textContent = 'Animation: An';
+            renderParticleSystem();
+        }
+
+        function renderParticleSystem() {
+            if (!particleState || !particleState.running) return;
+            const { canvas, ctx, particles } = particleState;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            particleState.t += 0.018;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(2, 6, 23, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const orbit = p.radius + Math.sin(particleState.t * 1.4 + i) * 18;
+                const x = centerX + Math.cos(p.angle + particleState.t * p.speed * 80 + i * 0.3) * orbit;
+                const y = centerY + Math.sin(p.angle + particleState.t * p.speed * 80 + i * 0.4) * orbit * 0.9;
+
+                ctx.beginPath();
+                ctx.fillStyle = `hsla(${p.hue}, 90%, 70%, 0.9)`;
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (i % 3 === 0) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `hsla(${(p.hue + 40) % 360}, 80%, 70%, 0.3)`;
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+            }
+
+            requestAnimationFrame(renderParticleSystem);
+        }
+
+        function toggleParticleSystem() {
+            if (!particleState) {
+                initParticleSystem();
+            }
+            particleState.running = !particleState.running;
+            const btn = document.getElementById('btn-particles-toggle');
+            btn.textContent = particleState.running ? 'Animation: An' : 'Animation: Aus';
+            if (particleState.running) {
+                renderParticleSystem();
+            }
+        }
+
+        function resetParticleSystem() {
+            initParticleSystem();
+        }
+
         function generateIcosphere(recursion) {
-            let vertices = [{x:0,y:1,z:0},{x:0,y:-1,z:0},{x:1,y:0,z:0},{x:-1,y:0,z:0},{x:0,y:0,z:1},{x:0,y:0,z:-1}];
-            let faces = [{v1:0,v2:4,v3:2},{v1:0,v2:2,v3:5},{v1:0,v2:5,v3:3},{v1:0,v2:3,v3:4},{v1:1,v2:2,v3:4},{v1:1,v2:5,v3:2},{v1:1,v2:3,v3:5},{v1:1,v2:4,v3:3}];
+            let vertices = [
+                {x: 0, y: 1, z: 0}, {x: 0, y: -1, z: 0},
+                {x: 1, y: 0, z: 0}, {x: -1, y: 0, z: 0},
+                {x: 0, y: 0, z: 1}, {x: 0, y: 0, z: -1}
+            ];
+            let faces = [
+                {v1:0, v2:4, v3:2}, {v1:0, v2:2, v3:5}, {v1:0, v2:5, v3:3}, {v1:0, v2:3, v3:4},
+                {v1:1, v2:2, v3:4}, {v1:1, v2:5, v3:2}, {v1:1, v2:3, v3:5}, {v1:1, v2:4, v3:3}
+            ];
             const cache = {};
             function getMidPoint(i1, i2) {
                 const key = i1 < i2 ? `${i1}_${i2}` : `${i2}_${i1}`;
@@ -430,8 +496,10 @@
             for(let r=0; r<recursion; r++) {
                 const newFaces = [];
                 for(let f of faces) {
-                    const a = getMidPoint(f.v1, f.v2), b = getMidPoint(f.v2, f.v3), c = getMidPoint(f.v3, f.v1);
-                    newFaces.push({v1:f.v1,v2:a,v3:c},{v1:f.v2,v2:b,v3:a},{v1:f.v3,v2:c,v3:b},{v1:a,v2:b,v3:c});
+                    const a = getMidPoint(f.v1, f.v2);
+                    const b = getMidPoint(f.v2, f.v3);
+                    const c = getMidPoint(f.v3, f.v1);
+                    newFaces.push({v1:f.v1, v2:a, v3:c}, {v1:f.v2, v2:b, v3:a}, {v1:f.v3, v2:c, v3:b}, {v1:a, v2:b, v3:c});
                 }
                 faces = newFaces;
             }
@@ -445,246 +513,132 @@
             }
             return {pos, count: pos.length/3};
         }
+
         function multiplyMatrices(a, b) {
             const out = new Float32Array(16);
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
-                    out[i * 4 + j] = a[i * 4 + 0] * b[0 * 4 + j] + a[i * 4 + 1] * b[1 * 4 + j] + a[i * 4 + 2] * b[2 * 4 + j] + a[i * 4 + 3] * b[3 * 4 + j];
+            for (let col = 0; col < 4; col++) {
+                for (let row = 0; row < 4; row++) {
+                    out[row + col * 4] =
+                        a[0 + row] * b[col * 4 + 0] +
+                        a[4 + row] * b[col * 4 + 1] +
+                        a[8 + row] * b[col * 4 + 2] +
+                        a[12 + row] * b[col * 4 + 3];
                 }
             }
             return out;
         }
+
         function makePerspective(fov, aspect, near, far) {
             const f = 1.0 / Math.tan(fov / 2);
             const out = new Float32Array(16);
-            out[0] = f / aspect; out[5] = f; out[10] = (far + near) / (near - far); out[11] = -1;
-            out[14] = (2 * far * near) / (near - far); return out;
+            out[0] = f / aspect;
+            out[5] = f;
+            out[10] = (far + near) / (near - far);
+            out[11] = -1;
+            out[14] = (2 * far * near) / (near - far);
+            return out;
         }
+
+        function normalize(v) {
+            const len = Math.hypot(v[0], v[1], v[2]) || 1;
+            return [v[0] / len, v[1] / len, v[2] / len];
+        }
+
+        function dot(a, b) {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        function cross(a, b) {
+            return [
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ];
+        }
+
         function makeLookAt(eye, center, up) {
-            let z0=eye[0]-center[0], z1=eye[1]-center[1], z2=eye[2]-center[2];
-            let len = Math.sqrt(z0*z0+z1*z1+z2*z2); z0/=len; z1/=len; z2/=len;
-            let x0=up[1]*z2-up[2]*z1, x1=up[2]*z0-up[0]*z2, x2=up[0]*z1-up[1]*z0;
-            len = Math.sqrt(x0*x0+x1*x1+x2*x2); x0/=len; x1/=len; x2/=len;
-            let y0=z1*x2-z2*x1, y1=z2*x0-z0*x2, y2=z0*x1-z1*x0;
+            const zAxis = normalize([eye[0] - center[0], eye[1] - center[1], eye[2] - center[2]]);
+            const xAxis = normalize(cross(up, zAxis));
+            const yAxis = cross(zAxis, xAxis);
+
             const out = new Float32Array(16);
-            out[0]=x0; out[4]=y0; out[8]=z0; out[12]=0;
-            out[1]=x1; out[5]=y1; out[9]=z1; out[13]=0;
-            out[2]=x2; out[6]=y2; out[10]=z2; out[14]=0;
-            out[12]=-(x0*eye[0]+x1*eye[1]+x2*eye[2]);
-            out[13]=-(y0*eye[0]+y1*eye[1]+y2*eye[2]);
-            out[14]=-(z0*eye[0]+z1*eye[1]+z2*eye[2]);
-            out[15]=1; return out;
+            out[0] = xAxis[0];
+            out[1] = xAxis[1];
+            out[2] = xAxis[2];
+            out[3] = 0;
+
+            out[4] = yAxis[0];
+            out[5] = yAxis[1];
+            out[6] = yAxis[2];
+            out[7] = 0;
+
+            out[8] = -zAxis[0];
+            out[9] = -zAxis[1];
+            out[10] = -zAxis[2];
+            out[11] = 0;
+
+            out[12] = -dot(xAxis, eye);
+            out[13] = -dot(yAxis, eye);
+            out[14] = dot(zAxis, eye);
+            out[15] = 1;
+            return out;
         }
+
         function renderCameraScene() {
             if(!cGl) return;
             const sphere = generateIcosphere(recursionLevel);
-            const eyeX = Math.sin(camAngle) * camDist, eyeZ = Math.cos(camAngle) * camDist;
-            const viewMat = makeLookAt([eyeX, camHeight, eyeZ], [0, 0, 0], [0, 1, 0]);
-            const projMat = makePerspective(Math.PI/4, 1, 0.1, 100.0);
-            const mvp = multiplyMatrices(projMat, viewMat);
-            cGl.bindBuffer(cGl.ARRAY_BUFFER, cPosBuf); cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos), cGl.STATIC_DRAW);
+
+            const eyeX = Math.sin(camAngle) * camDist;
+            const eyeZ = Math.cos(camAngle) * camDist;
+            const eye = [eyeX, camHeight, eyeZ];
+            const center = [0, 0, 0];
+            const up = [0, 1, 0];
+
+            const forward = normalize([center[0] - eye[0], center[1] - eye[1], center[2] - eye[2]]);
+            const right = normalize(cross(up, forward));
+            const cameraUp = cross(forward, right);
+
+            const projected = [];
+            const colors = [];
+            const maxDistance = camDist + 1.5;
+
+            for (let i = 0; i < sphere.pos.length; i += 3) {
+                const v = [sphere.pos[i], sphere.pos[i + 1], sphere.pos[i + 2]];
+                const dx = v[0] - eye[0];
+                const dy = v[1] - eye[1];
+                const dz = v[2] - eye[2];
+                const x = dx * right[0] + dy * right[1] + dz * right[2];
+                const y = dx * cameraUp[0] + dy * cameraUp[1] + dz * cameraUp[2];
+                const z = dx * forward[0] + dy * forward[1] + dz * forward[2];
+
+                if (z <= 0.15 || z > maxDistance) continue;
+
+                const f = 1.2 / Math.tan(Math.PI / 8);
+                const sx = (x / z) * f;
+                const sy = (y / z) * f;
+                projected.push(sx, sy, 0.0);
+                colors.push(Math.abs(v[0]) * 0.7 + 0.2, Math.abs(v[1]) * 0.7 + 0.2, 0.95);
+            }
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cPosBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(projected), cGl.STATIC_DRAW);
             cGl.enableVertexAttribArray(cPosLoc); cGl.vertexAttribPointer(cPosLoc, 3, cGl.FLOAT, false, 0, 0);
-            cGl.bindBuffer(cGl.ARRAY_BUFFER, cColBuf); cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(sphere.pos.map(v => Math.abs(v))), cGl.STATIC_DRAW);
+
+            cGl.bindBuffer(cGl.ARRAY_BUFFER, cColBuf);
+            cGl.bufferData(cGl.ARRAY_BUFFER, new Float32Array(colors), cGl.STATIC_DRAW);
             cGl.enableVertexAttribArray(cColLoc); cGl.vertexAttribPointer(cColLoc, 3, cGl.FLOAT, false, 0, 0);
-            cGl.uniformMatrix4fv(cGl.getUniformLocation(cProg, 'uMVP'), false, mvp);
+
             cGl.viewport(0, 0, cGl.canvas.width, cGl.canvas.height);
-            cGl.clearColor(0.02, 0.03, 0.07, 1.0); cGl.clear(cGl.COLOR_BUFFER_BIT | cGl.DEPTH_BUFFER_BIT);
+            cGl.clearColor(0.02, 0.03, 0.07, 1.0);
+            cGl.clear(cGl.COLOR_BUFFER_BIT | cGl.DEPTH_BUFFER_BIT);
             cGl.enable(cGl.DEPTH_TEST);
-            if(wireframeMode !== 1) cGl.drawArrays(cGl.TRIANGLES, 0, sphere.count);
-            if(wireframeMode !== 2) cGl.drawArrays(cGl.LINES, 0, sphere.count);
-        }
 
-        // ==========================================
-        // AUFGABE 6: FLIEGENDE KUGELN & ANIMIERTER TORUS
-        // ==========================================
-        let sGl, sProg, sPosBuf, sColBuf, sPosLoc, sColLoc, sUvpLoc;
-        let spheresInit = false, spheresRunning = true, animationTime = 0, animFrameId = null;
-
-        function initSpheresApp() {
-            const canvas = document.getElementById('glcanvas-spheres');
-            sGl = canvas.getContext('webgl'); if(!sGl) return;
-            if(!spheresInit) {
-                spheresInit = true;
-                sProg = sGl.createProgram();
-                const s1 = sGl.createShader(sGl.VERTEX_SHADER), s2 = sGl.createShader(sGl.FRAGMENT_SHADER);
-                sGl.shaderSource(s1, `attribute vec3 aPos; attribute vec3 aCol; varying vec3 vCol; uniform mat4 uMVP; void main(){gl_Position=uMVP*vec4(aPos,1.0); vCol=aCol;}`); sGl.compileShader(s1);
-                sGl.shaderSource(s2, `precision mediump float; varying vec3 vCol; void main(){gl_FragColor=vec4(vCol,1.0);}`); sGl.compileShader(s2);
-                sGl.attachShader(sProg, s1); sGl.attachShader(sProg, s2); sGl.linkProgram(sProg); sGl.useProgram(sProg);
-                sPosLoc = sGl.getAttribLocation(sProg, 'aPos'); sColLoc = sGl.getAttribLocation(sProg, 'aCol');
-                sUvpLoc = sGl.getUniformLocation(sProg, 'uMVP');
-                sPosBuf = sGl.createBuffer(); sColBuf = sGl.createBuffer();
+            const drawCount = projected.length / 3;
+            if (wireframeMode === 0 || wireframeMode === 2) {
+                cGl.drawArrays(cGl.TRIANGLES, 0, drawCount);
             }
-            if(spheresRunning && !animFrameId) {
-                startSpheresLoop();
-            } else {
-                renderSpheresScene();
-            }
-        }
-
-        function toggleSpheresAnimation() {
-            spheresRunning = !spheresRunning;
-            const btn = document.getElementById('btn-spheres-toggle');
-            if(spheresRunning) {
-                btn.textContent = "Animation Ein/Aus [k]";
-                btn.classList.add('primary');
-                startSpheresLoop();
-            } else {
-                btn.textContent = "Fortsetzen [k]";
-                btn.classList.remove('primary');
-                cancelAnimationFrame(animFrameId);
-                animFrameId = null;
-            }
-        }
-
-        function stepSpheresAnimation() {
-            if(!spheresRunning) {
-                animationTime += 0.05;
-                renderSpheresScene();
-            }
-        }
-
-        function startSpheresLoop() {
-            function loop() {
-                if(!spheresRunning) return;
-                animationTime += 0.025;
-                renderSpheresScene();
-                animFrameId = requestAnimationFrame(loop);
-            }
-            animFrameId = requestAnimationFrame(loop);
-        }
-
-        function generateTorusMesh(R, r, uSteps, vSteps, rotAngle) {
-            const pos = [], col = [];
-            const cosA = Math.cos(rotAngle), sinA = Math.sin(rotAngle);
-            for (let i = 0; i <= uSteps; i++) {
-                const u = (i / uSteps) * Math.PI * 2;
-                for (let j = 0; j <= vSteps; j++) {
-                    const v = (j / vSteps) * Math.PI * 2;
-                    // Parametrisierte Torus-Gleichung
-                    let x = (R + r * Math.cos(v)) * Math.cos(u);
-                    let y = (R + r * Math.cos(v)) * Math.sin(u);
-                    let z = r * Math.sin(v);
-
-                    // Erweiterung: Torus-Rotation um X/Z-Achse
-                    let rx = x;
-                    let ry = y * cosA - z * sinA;
-                    let rz = y * sinA + z * cosA;
-
-                    pos.push(rx * 0.7, ry * 0.7, rz * 0.7);
-                    col.push(0.15, 0.5 + 0.3 * Math.cos(u), 0.8 + 0.2 * Math.sin(v));
-                }
-            }
-            const idx = [];
-            for (let i = 0; i < uSteps; i++) {
-                for (let j = 0; j < vSteps; j++) {
-                    const r1 = i * (vSteps + 1), r2 = (i + 1) * (vSteps + 1);
-                    idx.push(r1+j, r1+j+1, r2+j, r1+j+1, r2+j+1, r2+j);
-                }
-            }
-            return {pos, idx, count: idx.length};
-        }
-
-        function generateGridFloor() {
-            const pos = [], col = [];
-            const size = 1.8, steps = 10, yLevel = -1.2;
-            for(let i = -steps; i <= steps; i++) {
-                const p = (i / steps) * size;
-                // X-Linien
-                pos.push(-size, yLevel, p, size, yLevel, p);
-                col.push(0.2, 0.3, 0.4, 0.2, 0.3, 0.4);
-                // Z-Linien
-                pos.push(p, yLevel, -size, p, yLevel, size);
-                col.push(0.2, 0.3, 0.4, 0.2, 0.3, 0.4);
-            }
-            return {pos, count: pos.length / 3};
-        }
-
-        function generateSphere(cx, cy, cz, radius, cr, cg, cb) {
-            const pos = [], col = [];
-            const lats = 8, lons = 8;
-            for(let i=0; i<=lats; i++) {
-                const theta1 = (i/lats) * Math.PI, theta2 = ((i+1)/lats) * Math.PI;
-                for(let j=0; j<=lons; j++) {
-                    const phi1 = (j/lons)*Math.PI*2, phi2 = ((j+1)/lons)*Math.PI*2;
-                    // Einfache Quad-Dreiecke für die Kugel
-                    const p1 = {x: cx + radius*Math.sin(theta1)*Math.cos(phi1), y: cy + radius*Math.cos(theta1), z: cz + radius*Math.sin(theta1)*Math.sin(phi1)};
-                    const p2 = {x: cx + radius*Math.sin(theta2)*Math.cos(phi1), y: cy + radius*Math.cos(theta2), z: cz + radius*Math.sin(theta2)*Math.sin(phi1)};
-                    const p3 = {x: cx + radius*Math.sin(theta1)*Math.cos(phi2), y: cy + radius*Math.cos(theta1), z: cz + radius*Math.sin(theta1)*Math.sin(phi2)};
-                    
-                    pos.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, p3.x, p3.y, p3.z);
-                    col.push(cr, cg, cb, cr, cg, cb, cr, cg, cb);
-                }
-            }
-            return {pos, count: pos.length / 3};
-        }
-
-        function renderSpheresScene() {
-            if(!sGl) return;
-            sGl.viewport(0, 0, sGl.canvas.width, sGl.canvas.height);
-            sGl.clearColor(0.02, 0.03, 0.07, 1.0);
-            sGl.clear(sGl.COLOR_BUFFER_BIT | sGl.DEPTH_BUFFER_BIT);
-            sGl.enable(sGl.DEPTH_TEST);
-
-            // Kamera-Transformation (fester Blickwinkel mit leichter Drehung)
-            const viewMat = makeLookAt([0.0, 0.5, 3.2], [0, 0, 0], [0, 1, 0]);
-            const projMat = makePerspective(Math.PI/4, 1, 0.1, 100.0);
-            const mvp = multiplyMatrices(projMat, viewMat);
-
-            // 1. Torus zeichnen (mit Rotation als Erweiterung)
-            const torusRot = animationTime * 0.6;
-            const torusData = generateTorusMesh(1.1, 0.4, 24, 16, torusRot);
-            
-            // Wir wandeln den Index-Buffer in ein trianguliertes Array um für einfaches Zeichnen
-            const tPos = [], tCol = [];
-            for(let i=0; i<torusData.idx.length; i++) {
-                const idx = torusData.idx[i];
-                tPos.push(torusData.pos[idx*3], torusData.pos[idx*3+1], torusData.pos[idx*3+2]);
-                tCol.push(0.1, 0.7, 0.9);
-            }
-
-            sGl.bindBuffer(sGl.ARRAY_BUFFER, sPosBuf);
-            sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(tPos), sGl.STATIC_DRAW);
-            sGl.enableVertexAttribArray(sPosLoc); sGl.vertexAttribPointer(sPosLoc, 3, sGl.FLOAT, false, 0, 0);
-
-            sGl.bindBuffer(sGl.ARRAY_BUFFER, sColBuf);
-            sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(tCol), sGl.STATIC_DRAW);
-            sGl.enableVertexAttribArray(sColLoc); sGl.vertexAttribPointer(sColLoc, 3, sGl.FLOAT, false, 0, 0);
-
-            sGl.uniformMatrix4fv(sUvpLoc, false, mvp);
-            sGl.drawArrays(sGl.TRIANGLES, 0, tPos.length / 3);
-
-            // 2. Gitterlinien-Ebene zeichnen
-            const grid = generateGridFloor();
-            sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(grid.pos), sGl.STATIC_DRAW);
-            sGl.vertexAttribPointer(sPosLoc, 3, sGl.FLOAT, false, 0, 0);
-            sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(grid.pos.map(() => 0.4)), sGl.STATIC_DRAW);
-            sGl.vertexAttribPointer(sColLoc, 3, sGl.FLOAT, false, 0, 0);
-            sGl.drawArrays(sGl.LINES, 0, grid.count);
-
-            // 3. Vier fliegende Kugeln (auf phasenverschobenen Bahnen durch den Torus)
-            const sphereColors = [
-                [1.0, 0.3, 0.3], // Rot
-                [0.3, 1.0, 0.3], // Grün
-                [1.0, 0.8, 0.2], // Gelb
-                [0.3, 0.8, 1.0]  // Cyan
-            ];
-
-            for(let k=0; k<4; k++) {
-                const offset = k * (Math.PI / 2);
-                const angle = animationTime + offset;
-                // Bahn durch den Torustubus
-                const majorR = 0.77;
-                const minorR = 0.28;
-                const cx = (majorR + minorR * Math.cos(angle * 2)) * Math.cos(angle);
-                const cy = (majorR + minorR * Math.cos(angle * 2)) * Math.sin(angle);
-                const cz = minorR * Math.sin(angle * 2);
-
-                const sph = generateSphere(cx, cy, cz, 0.09, sphereColors[k][0], sphereColors[k][1], sphereColors[k][2]);
-                sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(sph.pos), sGl.STATIC_DRAW);
-                sGl.vertexAttribPointer(sPosLoc, 3, sGl.FLOAT, false, 0, 0);
-                sGl.bufferData(sGl.ARRAY_BUFFER, new Float32Array(sph.pos.map(v => Math.abs(v))), sGl.STATIC_DRAW);
-                sGl.vertexAttribPointer(sColLoc, 3, sGl.FLOAT, false, 0, 0);
-                sGl.drawArrays(sGl.TRIANGLES, 0, sph.count);
+            if (wireframeMode === 0 || wireframeMode === 1) {
+                cGl.drawArrays(cGl.LINES, 0, drawCount);
             }
         }
     </script>
